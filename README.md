@@ -1,4 +1,4 @@
-# React Interview App
+# React App
 
 ## Project Setup
 
