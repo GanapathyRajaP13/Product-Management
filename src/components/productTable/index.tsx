@@ -21,11 +21,11 @@ const ProductsTable: React.FC = () => {
   });
   console.log(products, "kkkk");
   useEffect(() => {
-    dispatch(fetchProducts() as any);  // fetch product details from produc store
+    dispatch(fetchProducts() as any); // fetch product details from produc store
   }, [dispatch]);
 
   const onClose = () => {
-    setSelectedProductId(null);  // modal review close logic
+    setSelectedProductId(null); // modal review close logic
   };
 
   // column for MUI datagrid Table
@@ -103,9 +103,9 @@ const ProductsTable: React.FC = () => {
       },
     },
     {
-      field: "action",
-      headerName: "Action",
-      width: 140,
+      field: "review",
+      headerName: "Review",
+      width: 120,
       headerAlign: "center",
       align: "center",
       renderHeader: CustomHeader,
@@ -116,7 +116,7 @@ const ProductsTable: React.FC = () => {
             variant="contained"
             color="primary"
           >
-            View Reviews
+            View
           </Button>
         );
       },
@@ -153,7 +153,7 @@ const ProductsTable: React.FC = () => {
 
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
-      <DataGrid               // Mui Data table
+      <DataGrid // Mui Data table
         rows={products.map((review) => ({
           ...review,
         }))}
@@ -162,14 +162,22 @@ const ProductsTable: React.FC = () => {
         paginationModel={paginationModel}
         onPaginationModelChange={setPaginationModel}
         sx={{
+          "& .MuiDataGrid-columnSeparator": {
+            display: "none", // Hide default column separators if needed
+          },
+          "& .MuiDataGrid-cell": {
+            borderRight: "1px solid #ccc", // Add a right border to each cell
+          },
           "& .MuiDataGrid-columnHeader": {
             backgroundColor: "#f5f5f5 !important",
+            borderBottom: "1px solid #ddd",
+            borderRight: "1px solid #ccc",
           },
         }}
       />
       <Box>
         {selectedProductId !== null && (
-          <ReviewsModal  // modal for view review clicked in data table
+          <ReviewsModal // modal for view review clicked in data table
             productId={selectedProductId}
             open={true}
             onClose={onClose}

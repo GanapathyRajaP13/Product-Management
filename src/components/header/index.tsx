@@ -51,7 +51,7 @@ const Header: React.FC = () => {
           </Button>
         </Toolbar>
       </AppBar>
-      <Sidebar open={isVisible} />
+      <Sidebar open={isVisible} toggleSidebar={toggleSidebar} />
     </Box>
   );
 };

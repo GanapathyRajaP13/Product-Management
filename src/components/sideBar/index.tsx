@@ -1,12 +1,13 @@
-import React from 'react';
-import { Drawer, List, ListItemButton, ListItemText } from '@mui/material';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Drawer, List, ListItemButton, ListItemText } from "@mui/material";
+import { Link } from "react-router-dom";
 
 interface SidebarProps {
   open: boolean;
+  toggleSidebar: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ open }) => {
+const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar }) => {
   return (
     <Drawer
       variant="persistent"
@@ -15,14 +16,14 @@ const Sidebar: React.FC<SidebarProps> = ({ open }) => {
       sx={{
         width: 240,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width: 240,
-          boxSizing: 'border-box',
-          mt:8
+          boxSizing: "border-box",
+          mt: 8,
         },
       }}
     >
-      <List>
+      <List onClick={toggleSidebar}>
         <ListItemButton component={Link} to="/products">
           <ListItemText primary="Products" />
         </ListItemButton>

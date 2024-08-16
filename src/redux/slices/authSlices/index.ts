@@ -25,6 +25,7 @@ export const login = createAsyncThunk(
     const response = await axios.post("https://dummyjson.com/auth/login", {
       username,
       password,
+      expiresInMins: 10,
     });
     return response.data;
   }
