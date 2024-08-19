@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import apiClient from "../../../api/apiClient";
 
 export interface AuthState {
   isAuthenticated: boolean;
@@ -7,6 +7,7 @@ export interface AuthState {
   error: string | null;
   token: string | null;
   refreshToken: string | null;
+  tokenExpirationTime: number;
 }
 
 // initial state with specific type declared
@@ -16,16 +17,25 @@ const initialState: AuthState = {
   error: null,
   token: null,
   refreshToken: null,
+  tokenExpirationTime: 30,
 };
 
 // login API using Thunk middleware
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ username, password }: { username: string; password: string }) => {
-    const response = await axios.post("https://dummyjson.com/auth/login", {
+  async ({
+    username,
+    password,
+    time,
+  }: {
+    username: string;
+    password: string;
+    time: number;
+  }) => {
+    const response = await apiClient.post("auth/login", {
       username,
       password,
-      expiresInMins: 10,
+      expiresInMins: time,
     });
     return response.data;
   }
@@ -35,10 +45,18 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state) => {       // logout Operation clear all state
+    logout: (state) => {
+      // logout Operation clear all state
       state.isAuthenticated = false;
       state.token = null;
       state.refreshToken = null;
+      state.error = null;
+    },
+    refreshTokens: (state, action) => {
+      // new Token state refresh
+      state.isAuthenticated = true;
+      state.token = action.payload.token;
+      state.refreshToken = action.payload.refreshToken;
     },
   },
   // login thunk API pending need to load the screen
@@ -65,6 +83,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, refreshTokens } = authSlice.actions;
 
 export default authSlice.reducer;

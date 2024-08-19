@@ -26,20 +26,13 @@ type FormData = z.infer<typeof schema>;
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
-  const [conFirmPasswordvisible, setConFormPasswordVisible] = useState(false);
+  const { loading, error, tokenExpirationTime } = useSelector((state: RootState) => state.auth);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
-  // possward visiblity logic with icon
-  const confirmPasswordVisbleIcon = conFirmPasswordvisible ? (
-    <VisibilityOffOutlined />
-  ) : (
-    <VisibilityOutlined />
-  );
-  const confirmPassWordInvisibleIcon = !conFirmPasswordvisible ? (
-    <VisibilityOutlined />
-  ) : (
-    <VisibilityOffOutlined />
-  );
+  // Password visibility toggle logic
+  const togglePasswordVisibility = () => {
+    setConfirmPasswordVisible(!confirmPasswordVisible);
+  };
 
   // Use the form data type with useForm
   const {
@@ -50,14 +43,13 @@ const LoginForm: React.FC = () => {
     resolver: zodResolver(schema),
   });
 
-  // Toggle password visibility
-  const togglePasswordVisibility = () => {
-    setConFormPasswordVisible(!conFirmPasswordvisible);
-  };
-
   // Define the submit handler with the form data type
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    dispatch(login(data));
+    const payload = {
+      ...data, // includes username and password
+      time: tokenExpirationTime, // manually add time
+    };
+    dispatch(login(payload));
   };
 
   return (
@@ -92,27 +84,30 @@ const LoginForm: React.FC = () => {
           />
           <TextField
             label="Password"
-            type={conFirmPasswordvisible ? "text" : "password"}
+            type={confirmPasswordVisible ? "text" : "password"}
             fullWidth
             {...register("password")}
             error={!!errors.password}
             helperText={errors.password?.message}
             variant="filled"
-            sx={{ mb: 2,
-              ".MuiInputBase-root.MuiFilledInput-root": { backgroundColor: "#e8f0fe" }, }}
+            sx={{ 
+              mb: 2,
+              ".MuiInputBase-root.MuiFilledInput-root": { backgroundColor: "#e8f0fe" }, 
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment
                   sx={{
                     cursor: "pointer",
-                    
                   }}
                   onClick={togglePasswordVisibility}
                   position="end"
                 >
-                  {conFirmPasswordvisible
-                    ? confirmPasswordVisbleIcon
-                    : confirmPassWordInvisibleIcon}
+                  {confirmPasswordVisible ? (
+                    <VisibilityOffOutlined />
+                  ) : (
+                    <VisibilityOutlined />
+                  )}
                 </InputAdornment>
               ),
             }}

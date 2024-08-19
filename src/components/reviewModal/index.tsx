@@ -6,7 +6,7 @@ import {
   CircularProgress,
   IconButton,
 } from "@mui/material";
-import axios from "axios";
+import apiClient from "../../api/apiClient";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
@@ -25,8 +25,8 @@ const ReviewsModal: React.FC<{
 
   useEffect(() => {
     if (open) {
-      axios
-        .get(`https://dummyjson.com/products/${productId}`)  // review modal data API for Specific product view button clicked
+      apiClient
+        .get(`products/${productId}`)  // review modal data API for Specific product view button clicked
         .then((response) => {
           setReviews(response.data.reviews);
           setLoading(false);

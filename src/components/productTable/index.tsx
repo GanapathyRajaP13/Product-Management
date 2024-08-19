@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../redux/slices/productSlices";
 import ReviewsModal from "../reviewModal";
-import { RootState } from "../../redux/store";
 import { Button, CircularProgress, Typography, Box } from "@mui/material";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import CustomHeader from "./customHeader";
+import apiClient, { AxiosResponse } from "../../api/apiClient";
+
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  // Add other product fields as needed
+}
 
 const ProductsTable: React.FC = () => {
-  const dispatch = useDispatch();
-  const { products, loading, error } = useSelector(
-    (state: RootState) => state.products
-  );
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null
   );
@@ -19,10 +22,21 @@ const ProductsTable: React.FC = () => {
     page: 0,
     pageSize: 7,
   });
-  console.log(products, "kkkk");
+
   useEffect(() => {
-    dispatch(fetchProducts() as any); // fetch product details from produc store
-  }, [dispatch]);
+    const fetchProducts = async (): Promise<void> => {
+      try {
+        const response: AxiosResponse<{ products: Product[] }> = await apiClient.get("products");
+        setProducts(response.data.products);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const onClose = () => {
     setSelectedProductId(null); // modal review close logic
@@ -60,21 +74,19 @@ const ProductsTable: React.FC = () => {
       headerName: "Description",
       width: 600,
       renderHeader: CustomHeader,
-      renderCell: (params) => {
-        return (
-          <Typography
-            sx={{
-              fontSize: "12px",
-              overflowWrap: "break-word",
-              wordWrap: "break-word",
-              textOverflow: "ellipsis",
-              whiteSpace: "normal",
-            }}
-          >
-            {params.value}
-          </Typography>
-        );
-      },
+      renderCell: (params) => (
+        <Typography
+          sx={{
+            fontSize: "12px",
+            overflowWrap: "break-word",
+            wordWrap: "break-word",
+            textOverflow: "ellipsis",
+            whiteSpace: "normal",
+          }}
+        >
+          {params.value}
+        </Typography>
+      ),
     },
     {
       field: "price",
@@ -109,21 +121,18 @@ const ProductsTable: React.FC = () => {
       headerAlign: "center",
       align: "center",
       renderHeader: CustomHeader,
-      renderCell: (params) => {
-        return (
-          <Button
-            onClick={() => setSelectedProductId(params.row.id)}
-            variant="contained"
-            color="primary"
-          >
-            View
-          </Button>
-        );
-      },
+      renderCell: (params) => (
+        <Button
+          onClick={() => setSelectedProductId(params.row.id)}
+          variant="contained"
+          color="primary"
+        >
+          View
+        </Button>
+      ),
     },
   ];
 
-  // redux store state loading while thunk API is in pending
   if (loading) {
     return (
       <Box
@@ -137,26 +146,10 @@ const ProductsTable: React.FC = () => {
     );
   }
 
-  // redux store state error from thunk API is rejected
-  if (error) {
-    return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
-        <Typography color="error">{error}</Typography>
-      </Box>
-    );
-  }
-
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
-      <DataGrid // Mui Data table
-        rows={products.map((review) => ({
-          ...review,
-        }))}
+      <DataGrid
+        rows={products}
         columns={columns}
         pagination
         paginationModel={paginationModel}
@@ -175,15 +168,13 @@ const ProductsTable: React.FC = () => {
           },
         }}
       />
-      <Box>
-        {selectedProductId !== null && (
-          <ReviewsModal // modal for view review clicked in data table
-            productId={selectedProductId}
-            open={true}
-            onClose={onClose}
-          />
-        )}
-      </Box>
+      {selectedProductId !== null && (
+        <ReviewsModal
+          productId={selectedProductId}
+          open={true}
+          onClose={onClose}
+        />
+      )}
     </Box>
   );
 };
