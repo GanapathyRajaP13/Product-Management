@@ -54,8 +54,9 @@ const ProductsTable: React.FC = () => {
     {
       field: "id",
       headerName: "ID",
-      width: 90,
+      width: 80,
       align: "center",
+      headerAlign: "center",
       renderHeader: CustomHeader,
     },
     {
@@ -73,13 +74,13 @@ const ProductsTable: React.FC = () => {
     {
       field: "brand",
       headerName: "Brand",
-      width: 140,
+      width: 130,
       renderHeader: CustomHeader,
     },
     {
       field: "description",
       headerName: "Description",
-      width: 600,
+      width: 340,
       renderHeader: CustomHeader,
       renderCell: (params) => (
         <Typography
@@ -98,7 +99,7 @@ const ProductsTable: React.FC = () => {
     {
       field: "price",
       headerName: "Price",
-      width: 100,
+      width: 83,
       headerAlign: "center",
       align: "right",
       renderHeader: CustomHeader,
@@ -112,9 +113,10 @@ const ProductsTable: React.FC = () => {
     },
     {
       field: "availabilityStatus",
-      headerName: "Availability Status",
-      width: 150,
+      headerName: "Status",
+      width: 100,
       align: "center",
+      headerAlign: "center",
       renderHeader: CustomHeader,
       renderCell: (params) => {
         const color = params.value === "In Stock" ? "green" : "red";
@@ -124,7 +126,7 @@ const ProductsTable: React.FC = () => {
     {
       field: "review",
       headerName: "Review",
-      width: 120,
+      width: 100,
       headerAlign: "center",
       align: "center",
       renderHeader: CustomHeader,
@@ -154,7 +156,7 @@ const ProductsTable: React.FC = () => {
   }
 
   return (
-    <Card sx={{ marginTop: 4 }}>
+    <Card sx={{ marginTop: 2 }}>
       <CardHeader
         title="Products List"
         action={
