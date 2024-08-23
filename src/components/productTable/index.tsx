@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReviewsModal from "../reviewModal";
-import { Button, CircularProgress, Typography, Box } from "@mui/material";
+import { Button, CircularProgress, Typography, Box, Card, CardHeader, CardContent } from "@mui/material";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import CustomHeader from "./customHeader";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
@@ -42,6 +42,11 @@ const ProductsTable: React.FC = () => {
 
   const onClose = () => {
     setSelectedProductId(null); // modal review close logic
+  };
+
+  const handleAddProduct = () => {
+    // Add product button logic
+    console.log("Add Product button clicked");
   };
 
   // column for MUI datagrid Table
@@ -149,28 +154,43 @@ const ProductsTable: React.FC = () => {
   }
 
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
-      <DataGrid
-        rows={products}
-        columns={columns}
-        pagination
-        autoHeight
-        paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModel}
+    <Card sx={{ marginTop: 4 }}>
+      <CardHeader
+        title="Products List"
+        action={
+          <Button variant="contained" color="primary" onClick={handleAddProduct}>
+            Add Product
+          </Button>
+        }
         sx={{
-          "& .MuiDataGrid-columnSeparator": {
-            display: "none", // Hide default column separators if needed
-          },
-          "& .MuiDataGrid-cell": {
-            borderRight: "1px solid #ccc", // Add a right border to each cell
-          },
-          "& .MuiDataGrid-columnHeader": {
-            backgroundColor: "#f5f5f5 !important",
-            borderBottom: "1px solid #ddd",
-            borderRight: "1px solid #ccc",
-          },
+          backgroundColor: "#f5f5f5",
+          borderBottom: "1px solid #ddd",
         }}
       />
+      <CardContent>
+        <DataGrid
+          rows={products}
+          columns={columns}
+          pagination
+          autoHeight
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          sx={{
+            "& .MuiDataGrid-columnSeparator": {
+              display: "none", // Hide default column separators if needed
+            },
+            "& .MuiDataGrid-cell": {
+              borderRight: "1px solid #ccc", // Add a right border to each cell
+            },
+            "& .MuiDataGrid-columnHeader": {
+              backgroundColor: "#f5f5f5 !important",
+              borderBottom: "1px solid #ddd",
+              borderRight: "1px solid #ccc",
+            },
+          }}
+        />
+      </CardContent>
+
       {selectedProductId !== null && (
         <ReviewsModal
           productId={selectedProductId}
@@ -179,7 +199,7 @@ const ProductsTable: React.FC = () => {
         />
       )}
       {/* <GoogleMarker /> */}
-    </Box>
+    </Card>
   );
 };
 
