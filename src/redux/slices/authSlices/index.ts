@@ -8,6 +8,7 @@ export interface AuthState {
   token: string | null;
   refreshToken: string | null;
   tokenExpirationTime: number;
+  userData: object;
 }
 
 // initial state with specific type declared
@@ -17,6 +18,7 @@ const initialState: AuthState = {
   error: null,
   token: null,
   refreshToken: null,
+  userData: {},
   tokenExpirationTime: 30,
 };
 
@@ -51,6 +53,7 @@ const authSlice = createSlice({
       state.token = null;
       state.refreshToken = null;
       state.error = null;
+      state.userData = {};
     },
     refreshTokens: (state, action) => {
       // new Token state refresh
@@ -69,14 +72,17 @@ const authSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       state.isAuthenticated = true;
       state.loading = false;
-      state.token = action.payload.token;
+      state.token = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
+      state.userData = action.payload.userData
     });
     // login thunk API call rejucted
     builder.addCase(login.rejected, (state, action) => {
       state.loading = false;
       state.error =
-        action.error.message === "Request failed with status code 400"
+        action.error.message === "Request failed with status code 404"
+          ? "No user found."
+          : action.error.message === "Request failed with status code 401"
           ? "Invalid credentials"
           : "Failed to login";
     });
