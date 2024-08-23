@@ -1,23 +1,26 @@
 import axios from "axios";
 import { logout, refreshTokens } from "../redux/slices/authSlices";
+import { AppDispatch } from "../redux/store";
 
 export async function refreshAuthToken(
-  refreshToken: string,
-  dispatch: any
-) {
+  refreshToken: string | null,
+  dispatch: AppDispatch
+): Promise<void> {
   if (!refreshToken) {
     dispatch(logout());
     return;
   }
 
+  const url = import.meta.env.VITE_REFRESH_URL as string;
+
   try {
-    const response = await axios.post("https://dummyjson.com/auth/refresh", {
-      refreshToken: refreshToken,
-    });
+    const response = await axios.post(url, { refreshToken });
+    const { accessToken, refreshToken: newRefreshToken } = response.data;
+
     dispatch(
       refreshTokens({
-        token: response.data.token,
-        refreshToken: response.data.refreshToken,
+        token: accessToken,
+        refreshToken: newRefreshToken,
       })
     );
   } catch (error) {

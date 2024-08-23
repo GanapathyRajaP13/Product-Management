@@ -1,12 +1,11 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { store, RootState } from '../redux/store';
-import { refreshAuthToken } from './auth';
+import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { store, RootState } from "../redux/store";
+import { refreshAuthToken } from "./auth";
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: 'https://dummyjson.com/', // Replace with your actual API base URL
+  baseURL: import.meta.env.VITE_BASE_URL,
 });
 
-// Optionally, configure interceptors here if necessary
 apiClient.interceptors.request.use(
   async (config) => {
     const state: RootState = store.getState();
@@ -14,7 +13,7 @@ apiClient.interceptors.request.use(
     const refreshToken = state.auth.refreshToken;
 
     if (refreshToken) {
-      await refreshAuthToken(refreshToken, store.dispatch); // Pass dispatch from the store
+      await refreshAuthToken(refreshToken, store.dispatch);
     }
 
     if (token) {
@@ -28,5 +27,5 @@ apiClient.interceptors.request.use(
   }
 );
 
-export type { AxiosResponse }; // Export AxiosResponse type for use in components
+export type { AxiosResponse };
 export default apiClient;
