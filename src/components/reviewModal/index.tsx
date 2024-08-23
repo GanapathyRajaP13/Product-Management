@@ -26,9 +26,9 @@ const ReviewsModal: React.FC<{
   useEffect(() => {
     if (open) {
       apiClient
-        .get(`products/${productId}`)  // review modal data API for Specific product view button clicked
+        .post(`users/review`, { id: productId })
         .then((response) => {
-          setReviews(response.data.reviews);
+          setReviews(response.data.review);
           setLoading(false);
         })
         .catch((error) => {

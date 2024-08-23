@@ -4,6 +4,7 @@ import { Button, CircularProgress, Typography, Box } from "@mui/material";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import CustomHeader from "./customHeader";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
+// import GoogleMarker from "../gmap";
 
 interface Product {
   id: number;
@@ -20,13 +21,14 @@ const ProductsTable: React.FC = () => {
   );
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
-    pageSize: 7,
+    pageSize: 8,
   });
 
   useEffect(() => {
     const fetchProducts = async (): Promise<void> => {
       try {
-        const response: AxiosResponse<{ products: Product[] }> = await apiClient.get("products");
+        const response: AxiosResponse<{ products: Product[] }> =
+          await apiClient.get("users/products");
         setProducts(response.data.products);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -152,6 +154,7 @@ const ProductsTable: React.FC = () => {
         rows={products}
         columns={columns}
         pagination
+        autoHeight
         paginationModel={paginationModel}
         onPaginationModelChange={setPaginationModel}
         sx={{
@@ -175,6 +178,7 @@ const ProductsTable: React.FC = () => {
           onClose={onClose}
         />
       )}
+      {/* <GoogleMarker /> */}
     </Box>
   );
 };
