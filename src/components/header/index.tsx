@@ -7,15 +7,13 @@ import {
   Box,
   Popover,
   List,
-  ListItem,
-  ListItemText,
-  ButtonBase,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlices";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Sidebar from "../sideBar";
+import CommonListItemButton from "../atoms/customListItemButton";
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
@@ -47,6 +45,7 @@ const Header: React.FC = () => {
         position="static"
         sx={{
           height: "64px",
+          backgroundColor: "#9ba5a6",
           boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.04)",
           width: "100%",
         }}
@@ -64,7 +63,7 @@ const Header: React.FC = () => {
             Product Management
           </Typography>
           <IconButton color="inherit" onClick={handleClick}>
-            <AccountCircleIcon sx={{ fontSize: "40px"   }} />
+            <AccountCircleIcon sx={{ fontSize: "40px" }} />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -85,17 +84,8 @@ const Header: React.FC = () => {
         }}
       >
         <List component="nav">
-          <ListItem
-            component={ButtonBase}
-            onClick={() => {
-              /* Handle profile navigation */
-            }}
-          >
-            <ListItemText primary="Profile" />
-          </ListItem>
-          <ListItem component={ButtonBase} onClick={handleLogout}>
-            <ListItemText primary="Logout" />
-          </ListItem>
+          <CommonListItemButton to="/profile" primaryText="profile" />
+          <CommonListItemButton onClick={handleLogout} primaryText="Logout" />
         </List>
       </Popover>
     </Box>

@@ -1,6 +1,6 @@
 import React from "react";
-import { Drawer, List, ListItemButton, ListItemText } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Drawer, List } from "@mui/material";
+import CommonListItemButton from "../atoms/customListItemButton";
 
 interface SidebarProps {
   open: boolean;
@@ -20,13 +20,13 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar }) => {
           width: 240,
           boxSizing: "border-box",
           mt: 8,
+          backgroundColor: "#eeeeee",
         },
       }}
     >
       <List onClick={toggleSidebar}>
-        <ListItemButton component={Link} to="/products">
-          <ListItemText primary="Products" />
-        </ListItemButton>
+        <CommonListItemButton to="/products" primaryText="Products" />
+        <CommonListItemButton to="/dashboard" primaryText="Dashboard" />
       </List>
     </Drawer>
   );

@@ -8,7 +8,6 @@ import { RootState, AppDispatch } from "../../redux/store";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
 import {
   TextField,
-  Button,
   Container,
   Box,
   Typography,
@@ -21,7 +20,8 @@ import {
 } from "@mui/material";
 import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import the CSS for styling
+import "react-toastify/dist/ReactToastify.css";
+import CustomButton from "../atoms/customButton";
 
 const genderEnum = z.enum(["male", "female", "other"]);
 
@@ -322,11 +322,9 @@ const LoginForm: React.FC = () => {
             </Typography>
           )}
 
-          <Button
+          <CustomButton
             type="submit"
             fullWidth
-            variant="contained"
-            color="primary"
             disabled={loading}
             sx={{ mt: 2 }}
           >
@@ -337,10 +335,9 @@ const LoginForm: React.FC = () => {
               : isLogin
               ? "Login"
               : "Register"}
-          </Button>
+          </CustomButton>
 
-          <Button
-            type="button"
+          <CustomButton
             fullWidth
             variant="text"
             sx={{ mt: 2 }}
@@ -349,7 +346,7 @@ const LoginForm: React.FC = () => {
             {isLogin
               ? "Don't have an account? Register"
               : "Already have an account? Login"}
-          </Button>
+          </CustomButton>
         </Box>
       </Box>
 

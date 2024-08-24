@@ -8,10 +8,9 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import ProductsPage from "./pages/products";
-import { Box, CircularProgress } from "@mui/material";
-
-// Lazy load LoginPage
+import { Box, LinearProgress } from "@mui/material";
 const LoginPage = lazy(() => import("./pages/login"));
+const NotFoundPage = lazy(() => import("./pages/pageNotFound"));
 
 const App: React.FC = () => {
   const isAuthenticated = useSelector(
@@ -21,25 +20,22 @@ const App: React.FC = () => {
   return (
     <Router>
       <Box>
-        <Suspense fallback={<CircularProgress />}>
+        <Suspense fallback={<LinearProgress />}>
           <Routes>
             <Route
-              path="/login"
+              path="/"
               element={
                 isAuthenticated ? <Navigate to="/products" /> : <LoginPage />
               }
             />
             <Route
               path="/products"
-              element={
-                isAuthenticated ? (
-                  <ProductsPage />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
+              element={isAuthenticated ? <ProductsPage /> : <Navigate to="/" />}
             />
-            <Route path="*" element={<Navigate to="/login" />} />
+            <Route
+              path="*"
+              element={isAuthenticated ? <NotFoundPage /> : <LoginPage />}
+            />
           </Routes>
         </Suspense>
       </Box>

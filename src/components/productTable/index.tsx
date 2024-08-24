@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import ReviewsModal from "../reviewModal";
-import { Button, CircularProgress, Typography, Box, Card, CardHeader, CardContent } from "@mui/material";
+import {
+  CircularProgress,
+  Typography,
+  Box,
+  Card,
+  CardHeader,
+  CardContent,
+} from "@mui/material";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import CustomHeader from "./customHeader";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
+import CustomButton from "../atoms/customButton";
 // import GoogleMarker from "../gmap";
 
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  // Add other product fields as needed
-}
-
 const ProductsTable: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null
@@ -27,8 +28,9 @@ const ProductsTable: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async (): Promise<void> => {
       try {
-        const response: AxiosResponse<{ products: Product[] }> =
-          await apiClient.get("users/products");
+        const response: AxiosResponse<{ products: any }> = await apiClient.get(
+          "users/products"
+        );
         setProducts(response.data.products);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -41,15 +43,13 @@ const ProductsTable: React.FC = () => {
   }, []);
 
   const onClose = () => {
-    setSelectedProductId(null); // modal review close logic
+    setSelectedProductId(null);
   };
 
   const handleAddProduct = () => {
-    // Add product button logic
-    console.log("Add Product button clicked");
+    console.log("Add Product");
   };
 
-  // column for MUI datagrid Table
   const columns: GridColDef[] = [
     {
       field: "id",
@@ -131,13 +131,9 @@ const ProductsTable: React.FC = () => {
       align: "center",
       renderHeader: CustomHeader,
       renderCell: (params) => (
-        <Button
-          onClick={() => setSelectedProductId(params.row.id)}
-          variant="contained"
-          color="primary"
-        >
+        <CustomButton onClick={() => setSelectedProductId(params.row.id)}>
           View
-        </Button>
+        </CustomButton>
       ),
     },
   ];
@@ -158,14 +154,15 @@ const ProductsTable: React.FC = () => {
   return (
     <Card sx={{ marginTop: 2 }}>
       <CardHeader
-        title="Products List"
+        title="PRODUCTS LIST"
         action={
-          <Button variant="contained" color="primary" onClick={handleAddProduct}>
-            Add Product
-          </Button>
+          <CustomButton onClick={handleAddProduct}>Add Product</CustomButton>
         }
+        titleTypographyProps={{
+          variant: "h6",
+        }}
         sx={{
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#e2e6e7",
           borderBottom: "1px solid #ddd",
         }}
       />
@@ -179,10 +176,10 @@ const ProductsTable: React.FC = () => {
           onPaginationModelChange={setPaginationModel}
           sx={{
             "& .MuiDataGrid-columnSeparator": {
-              display: "none", // Hide default column separators if needed
+              display: "none",
             },
             "& .MuiDataGrid-cell": {
-              borderRight: "1px solid #ccc", // Add a right border to each cell
+              borderRight: "1px solid #ccc",
             },
             "& .MuiDataGrid-columnHeader": {
               backgroundColor: "#f5f5f5 !important",
