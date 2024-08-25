@@ -3,7 +3,7 @@ import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDispatch, useSelector } from "react-redux";
-import { login, logout } from "../../redux/authSlices";
+import { login } from "../../redux/authSlices";
 import { RootState, AppDispatch } from "../../redux/store";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
 import {
@@ -18,6 +18,7 @@ import {
   InputLabel,
   Grid,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -54,8 +55,9 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 type FormData = LoginFormData | RegisterFormData;
 
 const LoginForm: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, tokenExpirationTime } = useSelector(
+  const { loading, error, tokenExpirationTime, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
@@ -127,8 +129,10 @@ const LoginForm: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(logout());
-  }, [isLogin]);
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   const registrationErrors = !isLogin
     ? (errors as FieldErrors<RegisterFormData>)

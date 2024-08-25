@@ -1,46 +1,27 @@
 import React, { Suspense, lazy } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "./redux/store";
-import ProductsPage from "./pages/products";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Box, LinearProgress } from "@mui/material";
-import Dashboard from "./pages/dashboard";
+import ProductsPage from "./pages/products";
+import Profile from "./pages/profile";
+import ProtectedRoute from "./components/ProtectedRoute";
+import NotFoundPage from "./pages/pageNotFound";
+
 const LoginPage = lazy(() => import("./pages/login"));
-const NotFoundPage = lazy(() => import("./pages/pageNotFound"));
+const Dashboard = lazy(() => import("./pages/dashboard"));
 
 const App: React.FC = () => {
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
-
   return (
     <Router>
       <Box>
         <Suspense fallback={<LinearProgress />}>
           <Routes>
-            <Route
-              path="/"
-              element={
-                isAuthenticated ? <Navigate to="/products" /> : <LoginPage />
-              }
-            />
-            <Route
-              path="/products"
-              element={isAuthenticated ? <ProductsPage /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/dashboard"
-              element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
-            />
-            <Route
-              path="*"
-              element={isAuthenticated ? <NotFoundPage /> : <LoginPage />}
-            />
+            <Route path="/" element={<LoginPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
           </Routes>
         </Suspense>
       </Box>
