@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import ProductsPage from "./pages/products";
 import { Box, LinearProgress } from "@mui/material";
+import Dashboard from "./pages/dashboard";
 const LoginPage = lazy(() => import("./pages/login"));
 const NotFoundPage = lazy(() => import("./pages/pageNotFound"));
 
@@ -31,6 +32,10 @@ const App: React.FC = () => {
             <Route
               path="/products"
               element={isAuthenticated ? <ProductsPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/dashboard"
+              element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
             />
             <Route
               path="*"

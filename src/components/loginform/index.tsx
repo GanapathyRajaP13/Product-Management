@@ -3,7 +3,7 @@ import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDispatch, useSelector } from "react-redux";
-import { login, logout } from "../../redux/slices/authSlices";
+import { login, logout } from "../../redux/authSlices";
 import { RootState, AppDispatch } from "../../redux/store";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
 import {

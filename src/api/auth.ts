@@ -1,5 +1,5 @@
 import axios from "axios";
-import { logout, refreshTokens } from "../redux/slices/authSlices";
+import { logout, refreshTokens } from "../redux/authSlices";
 import { AppDispatch } from "../redux/store";
 
 export async function refreshAuthToken(

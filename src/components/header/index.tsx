@@ -9,7 +9,7 @@ import {
   List,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { logout } from "../../redux/slices/authSlices";
+import { logout } from "../../redux/authSlices";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Sidebar from "../sideBar";
