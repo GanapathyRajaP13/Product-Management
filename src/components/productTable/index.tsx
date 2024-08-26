@@ -12,7 +12,6 @@ import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import CustomHeader from "./customHeader";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
 import CustomButton from "../atoms/customButton";
-// import GoogleMarker from "../gmap";
 
 const ProductsTable: React.FC = () => {
   const [products, setProducts] = useState([]);
@@ -54,7 +53,7 @@ const ProductsTable: React.FC = () => {
     {
       field: "id",
       headerName: "ID",
-      width: 80,
+      flex: 0.5,
       align: "center",
       headerAlign: "center",
       renderHeader: CustomHeader,
@@ -62,25 +61,25 @@ const ProductsTable: React.FC = () => {
     {
       field: "title",
       headerName: "Title",
-      width: 250,
+      flex: 2,
       renderHeader: CustomHeader,
     },
     {
       field: "category",
       headerName: "Category",
-      width: 100,
+      flex: 1,
       renderHeader: CustomHeader,
     },
     {
       field: "brand",
       headerName: "Brand",
-      width: 130,
+      flex: 1.2,
       renderHeader: CustomHeader,
     },
     {
       field: "description",
       headerName: "Description",
-      width: 340,
+      flex: 3,
       renderHeader: CustomHeader,
       renderCell: (params) => (
         <Typography
@@ -99,7 +98,7 @@ const ProductsTable: React.FC = () => {
     {
       field: "price",
       headerName: "Price",
-      width: 83,
+      flex: 0.7,
       headerAlign: "center",
       align: "right",
       renderHeader: CustomHeader,
@@ -107,14 +106,14 @@ const ProductsTable: React.FC = () => {
     {
       field: "discountPercentage",
       headerName: "Discount (%)",
-      width: 110,
+      flex: 1,
       align: "right",
       renderHeader: CustomHeader,
     },
     {
       field: "availabilityStatus",
       headerName: "Status",
-      width: 100,
+      flex: 1,
       align: "center",
       headerAlign: "center",
       renderHeader: CustomHeader,
@@ -126,7 +125,7 @@ const ProductsTable: React.FC = () => {
     {
       field: "review",
       headerName: "Review",
-      width: 100,
+      flex: 1,
       headerAlign: "center",
       align: "center",
       renderHeader: CustomHeader,
@@ -166,14 +165,23 @@ const ProductsTable: React.FC = () => {
           borderBottom: "1px solid #ddd",
         }}
       />
-      <CardContent>
+      <CardContent
+        sx={{
+          padding: "0px",
+          "&.MuiCardContent-root:last-child": {
+            paddingBottom: "0px !important",
+          },
+        }}
+      >
         <DataGrid
           rows={products}
           columns={columns}
           pagination
           autoHeight
+          pageSizeOptions={[8]}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
+          disableColumnMenu
           sx={{
             "& .MuiDataGrid-columnSeparator": {
               display: "none",
@@ -186,6 +194,7 @@ const ProductsTable: React.FC = () => {
               borderBottom: "1px solid #ddd",
               borderRight: "1px solid #ccc",
             },
+            overflowX: "hidden",
           }}
         />
       </CardContent>
@@ -197,7 +206,6 @@ const ProductsTable: React.FC = () => {
           onClose={onClose}
         />
       )}
-      {/* <GoogleMarker /> */}
     </Card>
   );
 };

@@ -9,6 +9,7 @@ export interface UserData {
   gender: string;
   userCode: string;
   isActive: number;
+  UserType: number;
 }
 
 export interface AuthState {
@@ -36,6 +37,7 @@ const initialState: AuthState = {
     gender: "",
     userCode: "",
     isActive: 0,
+    UserType: 2,
   },
 };
 
@@ -76,6 +78,7 @@ const authSlice = createSlice({
         gender: "",
         userCode: "",
         isActive: 0,
+        UserType: 2,
       };
     },
     refreshTokens: (state, action) => {

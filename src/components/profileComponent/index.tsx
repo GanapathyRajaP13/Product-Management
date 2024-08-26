@@ -9,18 +9,48 @@ interface UserData {
   gender: string;
   userCode: string;
   isActive: number;
+  UserType: number;
 }
 
 interface UserProfileProps {
-  userData: UserData; 
+  userData: UserData;
 }
 
+const getUserRole = (userType: number): string => {
+  switch (userType) {
+    case 1:
+      return "Admin";
+    case 2:
+      return "User";
+    case 3:
+      return "Manager";
+    default:
+      return "Guest";
+  }
+};
+
 const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
-  const { username, email, firstname, lastname, gender, userCode, isActive } =
-    userData;
+  const {
+    username,
+    email,
+    firstname,
+    lastname,
+    gender,
+    userCode,
+    isActive,
+    UserType,
+  } = userData;
+
+  const userRole = getUserRole(UserType);
 
   return (
-    <Paper elevation={3} sx={{ padding: 3 }}>
+    <Paper elevation={3} sx={{ padding: 3, position: "relative" }}>
+      <Box sx={{ position: "absolute", top: 16, right: 16 }}>
+        <Typography variant="subtitle1" color="textSecondary">
+          Role: {userRole}
+        </Typography>
+      </Box>
+
       <Box display="flex" alignItems="center" mb={3}>
         <Avatar sx={{ width: 80, height: 80, marginRight: 3 }}>
           {firstname[0]} {lastname[0]}
@@ -30,7 +60,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
           <Typography variant="subtitle1" color="textSecondary">
             User Code: {userCode}
           </Typography>
-          <Typography variant="subtitle1" color={isActive ? "green" : "red"}>
+          <Typography
+            variant="subtitle1"
+            fontWeight="bold"
+            color={isActive ? "green" : "red"}
+          >
             {isActive ? "Active" : "Inactive"}
           </Typography>
         </Box>
