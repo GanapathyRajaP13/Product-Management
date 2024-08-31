@@ -53,7 +53,6 @@ const getUserRole = (userType: number): string => {
   }
 };
 
-// Schema for "Edit Profile" validation using Zod
 const editProfileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string(),
@@ -61,7 +60,6 @@ const editProfileSchema = z.object({
   gender: genderEnum,
 });
 
-// Schema for "Change Password" validation using Zod
 const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(6, "Current password is required"),
@@ -268,7 +266,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
                         <Select
                           {...field}
                           error={!!errors.gender}
-                          defaultValue={gender} // Ensure default gender is set correctly
+                          defaultValue={gender}
                         >
                           <MenuItem value="">Please select a gender</MenuItem>
                           <MenuItem value="male">Male</MenuItem>

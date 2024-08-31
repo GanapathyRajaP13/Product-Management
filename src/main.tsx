@@ -6,7 +6,7 @@ import App from "./App";
 import "./index.css";
 
 const container = document.getElementById("root");
-const root = ReactDOM.createRoot(container!); // Create root with non-null assertion
+const root = ReactDOM.createRoot(container!);
 
 root.render(
   <Provider store={store}>

@@ -1,7 +1,8 @@
+import { Box } from "@mui/material";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
+import DashboardComponent from "../../components/dashboard";
 import Header from "../../components/header";
-import { Box } from "@mui/material";
 import { RootState } from "../../redux/store";
 
 const Dashboard: React.FC<PropsFromRedux> = (props) => {
@@ -10,7 +11,7 @@ const Dashboard: React.FC<PropsFromRedux> = (props) => {
     <>
       <Header />
       <Box sx={{ margin: 1 }}>
-        <h2>Dashboard</h2>
+        <DashboardComponent />
       </Box>
     </>
   );

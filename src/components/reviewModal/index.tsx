@@ -38,7 +38,6 @@ const ReviewsModal: React.FC<{
     }
   }, [productId, open]);
 
-  // columns for the DataGrid Table
   const columns: GridColDef[] = [
     {
       field: "id",

@@ -7,6 +7,7 @@ import {
   Card,
   CardHeader,
   CardContent,
+  TextField,
 } from "@mui/material";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import CustomHeader from "./customHeader";
@@ -14,7 +15,8 @@ import apiClient, { AxiosResponse } from "../../api/apiClient";
 import CustomButton from "../atoms/customButton";
 
 const ProductsTable: React.FC = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<any>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null
@@ -31,6 +33,7 @@ const ProductsTable: React.FC = () => {
           "users/products"
         );
         setProducts(response.data.products);
+        setFilteredProducts(response.data.products)
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -57,30 +60,35 @@ const ProductsTable: React.FC = () => {
       align: "center",
       headerAlign: "center",
       renderHeader: CustomHeader,
+      sortable: false,
     },
     {
-      field: "title",
+      field: "name",
       headerName: "Title",
       flex: 2,
       renderHeader: CustomHeader,
+      sortable: false,
     },
     {
       field: "category",
       headerName: "Category",
       flex: 1,
       renderHeader: CustomHeader,
+      sortable: false,
     },
     {
       field: "brand",
       headerName: "Brand",
       flex: 1.2,
       renderHeader: CustomHeader,
+      sortable: false,
     },
     {
       field: "description",
       headerName: "Description",
       flex: 3,
       renderHeader: CustomHeader,
+      sortable: false,
       renderCell: (params) => (
         <Typography
           sx={{
@@ -102,6 +110,7 @@ const ProductsTable: React.FC = () => {
       headerAlign: "center",
       align: "right",
       renderHeader: CustomHeader,
+      sortable: false,
     },
     {
       field: "discountPercentage",
@@ -109,6 +118,7 @@ const ProductsTable: React.FC = () => {
       flex: 1,
       align: "right",
       renderHeader: CustomHeader,
+      sortable: false,
     },
     {
       field: "availabilityStatus",
@@ -117,6 +127,7 @@ const ProductsTable: React.FC = () => {
       align: "center",
       headerAlign: "center",
       renderHeader: CustomHeader,
+      sortable: false,
       renderCell: (params) => {
         const color = params.value === "In Stock" ? "green" : "red";
         return <span style={{ color: color }}>{params.value}</span>;
@@ -129,6 +140,7 @@ const ProductsTable: React.FC = () => {
       headerAlign: "center",
       align: "center",
       renderHeader: CustomHeader,
+      sortable: false,
       renderCell: (params) => (
         <CustomButton onClick={() => setSelectedProductId(params.row.id)}>
           View
@@ -136,6 +148,22 @@ const ProductsTable: React.FC = () => {
       ),
     },
   ];
+
+  const handleSearch = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const searchValue = event.target.value.toLowerCase();
+
+    if (searchValue === "") {
+      setFilteredProducts(products);
+    } else {
+      setFilteredProducts(
+        products.filter((item: any) =>
+          item.name.toLowerCase().includes(searchValue)
+        )
+      );
+    }
+  };
 
   if (loading) {
     return (
@@ -151,62 +179,69 @@ const ProductsTable: React.FC = () => {
   }
 
   return (
-    <Card sx={{ marginTop: 2 }}>
-      <CardHeader
-        title="PRODUCTS LIST"
-        action={
-          <CustomButton onClick={handleAddProduct}>Add Product</CustomButton>
-        }
-        titleTypographyProps={{
-          variant: "h6",
-        }}
-        sx={{
-          backgroundColor: "#e2e6e7",
-          borderBottom: "1px solid #ddd",
-        }}
-      />
-      <CardContent
-        sx={{
-          padding: "0px",
-          "&.MuiCardContent-root:last-child": {
-            paddingBottom: "0px !important",
-          },
-        }}
-      >
-        <DataGrid
-          rows={products}
-          columns={columns}
-          pagination
-          autoHeight
-          pageSizeOptions={[8]}
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-          disableColumnMenu
+    <>
+      <Box sx={{ marginTop: 2 }}>
+        <TextField placeholder="Search..." onChange={handleSearch} sx={{'&.MuiInputBase-input-MuiOutlinedInput-input':{
+          height:'20px'
+        }}} />
+      </Box>
+      <Card sx={{ marginTop: 2 }}>
+        <CardHeader
+          title="PRODUCTS LIST"
+          action={
+            <CustomButton onClick={handleAddProduct}>Add Product</CustomButton>
+          }
+          titleTypographyProps={{
+            variant: "h6",
+          }}
           sx={{
-            "& .MuiDataGrid-columnSeparator": {
-              display: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderRight: "1px solid #ccc",
-            },
-            "& .MuiDataGrid-columnHeader": {
-              backgroundColor: "#f5f5f5 !important",
-              borderBottom: "1px solid #ddd",
-              borderRight: "1px solid #ccc",
-            },
-            overflowX: "hidden",
+            backgroundColor: "#e2e6e7",
+            borderBottom: "1px solid #ddd",
           }}
         />
-      </CardContent>
+        <CardContent
+          sx={{
+            padding: "0px",
+            "&.MuiCardContent-root:last-child": {
+              paddingBottom: "0px !important",
+            },
+          }}
+        >
+          <DataGrid
+            rows={filteredProducts}
+            columns={columns}
+            pagination
+            autoHeight
+            pageSizeOptions={[8]}
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            disableColumnMenu
+            sx={{
+              "& .MuiDataGrid-columnSeparator": {
+                display: "none",
+              },
+              "& .MuiDataGrid-cell": {
+                borderRight: "1px solid #ccc",
+              },
+              "& .MuiDataGrid-columnHeader": {
+                backgroundColor: "#f5f5f5 !important",
+                borderBottom: "1px solid #ddd",
+                borderRight: "1px solid #ccc",
+              },
+              overflowX: "hidden",
+            }}
+          />
+        </CardContent>
 
-      {selectedProductId !== null && (
-        <ReviewsModal
-          productId={selectedProductId}
-          open={true}
-          onClose={onClose}
-        />
-      )}
-    </Card>
+        {selectedProductId !== null && (
+          <ReviewsModal
+            productId={selectedProductId}
+            open={true}
+            onClose={onClose}
+          />
+        )}
+      </Card>
+    </>
   );
 };
 
