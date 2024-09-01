@@ -22,6 +22,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomButton from "../atoms/customButton";
+import apiClient, { AxiosResponse } from "../../api/apiClient";
 
 const genderEnum = z.enum(["male", "female", "other"]);
 
@@ -34,6 +35,7 @@ interface UserData {
   userCode: string;
   isActive: number;
   UserType: number;
+  id: string;
 }
 
 interface UserProfileProps {
@@ -81,6 +83,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
     userCode,
     isActive,
     UserType,
+    id,
   } = userData;
 
   const userRole = getUserRole(UserType);
@@ -103,8 +106,21 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
     },
   });
 
-  const handleEditProfileSubmit = (data: any) => {
-    console.log("Edit Profile Data:", data);
+  const handleEditProfileSubmit = async (data: any) => {
+    const payload = {
+      ...data,
+      id: id,
+    };
+    try {
+      const response: AxiosResponse<UserData> = await apiClient.post(
+        "users/editProfile",
+        { info: payload }
+      );
+      console.log("Response Data:", response.data);
+      setEditPassword(false);
+    } catch (error) {
+      console.error("Error Edit Profile Data:", error);
+    }
   };
 
   const {
@@ -149,230 +165,234 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
   };
 
   return (
-    <Paper elevation={3} sx={{ padding: 3, position: "relative" }}>
-      <Box sx={{ position: "absolute", top: 16, right: 16 }}>
-        <Typography variant="subtitle1" color="textSecondary">
-          Role: {userRole}
-        </Typography>
-      </Box>
-
-      <Box display="flex" alignItems="center" mb={3}>
-        <Avatar sx={{ width: 80, height: 80, marginRight: 3 }}>
-          {firstname[0]} {lastname[0]}
-        </Avatar>
-        <Box>
-          <Typography variant="h5">{username}</Typography>
+    <>
+      <Paper elevation={3} sx={{ padding: 3, position: "relative" }}>
+        <Box sx={{ position: "absolute", top: 16, right: 16 }}>
           <Typography variant="subtitle1" color="textSecondary">
-            User Code: {userCode}
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
-            color={isActive ? "green" : "red"}
-          >
-            {isActive ? "Active" : "Inactive"}
+            Role: {userRole}
           </Typography>
         </Box>
-      </Box>
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body1">
-            <strong>First Name:</strong> {firstname}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body1">
-            <strong>Last Name:</strong> {lastname}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body1">
-            <strong>Email:</strong> {email}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body1">
-            <strong>Gender:</strong> {gender}
-          </Typography>
-        </Grid>
-      </Grid>
+        <Box display="flex" alignItems="center" mb={3}>
+          <Avatar sx={{ width: 80, height: 80, marginRight: 3 }}>
+            {firstname[0]} {lastname[0]}
+          </Avatar>
+          <Box>
+            <Typography variant="h5">{username}</Typography>
+            <Typography variant="subtitle1" color="textSecondary">
+              User Code: {userCode}
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              fontWeight="bold"
+              color={isActive ? "green" : "red"}
+            >
+              {isActive ? "Active" : "Inactive"}
+            </Typography>
+          </Box>
+        </Box>
 
-      <Divider sx={{ marginY: 3 }} />
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body1">
+              <strong>First Name:</strong> {firstname}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body1">
+              <strong>Last Name:</strong> {lastname}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body1">
+              <strong>Email:</strong> {email}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body1">
+              <strong>Gender:</strong> {gender}
+            </Typography>
+          </Grid>
+        </Grid>
 
-      <CustomButton
-        sx={{ marginRight: 2 }}
-        onClick={() => getFormVisible("profile")}
-      >
-        Edit Profile
-      </CustomButton>
-      <CustomButton onClick={() => getFormVisible("password")}>
-        Change Password
-      </CustomButton>
+        <Divider sx={{ marginY: 3 }} />
 
-      {editProfile && (
-        <Card sx={{ marginTop: 2 }}>
-          <CardHeader
-            title="Edit Profile"
-            titleTypographyProps={{
-              variant: "h6",
-            }}
-            sx={{
-              backgroundColor: "#e2e6e7",
-              borderBottom: "1px solid #ddd",
-            }}
-          />
-          <CardContent>
-            <form onSubmit={handleSubmit(handleEditProfileSubmit)}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="First Name"
-                    fullWidth
-                    {...register("firstName")}
-                    error={!!errors.firstName}
-                    helperText={errors.firstName?.message || ""}
-                    variant="filled"
-                  />
+        <CustomButton
+          sx={{ marginRight: 2 }}
+          onClick={() => getFormVisible("profile")}
+        >
+          Edit Profile
+        </CustomButton>
+        <CustomButton onClick={() => getFormVisible("password")}>
+          Change Password
+        </CustomButton>
+
+        {editProfile && (
+          <Card sx={{ marginTop: 2 }}>
+            <CardHeader
+              title="Edit Profile"
+              titleTypographyProps={{
+                variant: "h6",
+              }}
+              sx={{
+                backgroundColor: "#e2e6e7",
+                borderBottom: "1px solid #ddd",
+              }}
+            />
+            <CardContent>
+              <form onSubmit={handleSubmit(handleEditProfileSubmit)}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="First Name"
+                      fullWidth
+                      {...register("firstName")}
+                      error={!!errors.firstName}
+                      helperText={errors.firstName?.message || ""}
+                      variant="filled"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="Last Name"
+                      fullWidth
+                      {...register("lastName")}
+                      error={!!errors.lastName}
+                      helperText={errors.lastName?.message || ""}
+                      variant="filled"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Email"
+                      type="email"
+                      fullWidth
+                      {...register("email")}
+                      error={!!errors.email}
+                      helperText={errors.email?.message || ""}
+                      variant="filled"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="filled">
+                      <InputLabel>Gender</InputLabel>
+                      <Controller
+                        name="gender"
+                        control={control}
+                        render={({ field }) => (
+                          <Select
+                            {...field}
+                            error={!!errors.gender}
+                            defaultValue={gender}
+                          >
+                            <MenuItem value="">Please select a gender</MenuItem>
+                            <MenuItem value="male">Male</MenuItem>
+                            <MenuItem value="female">Female</MenuItem>
+                            <MenuItem value="other">Other</MenuItem>
+                          </Select>
+                        )}
+                      />
+                      {errors.gender && (
+                        <Typography fontSize="12px" color="error">
+                          {errors.gender.message}
+                        </Typography>
+                      )}
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <CustomButton variant="contained" type="submit">
+                      Save Changes
+                    </CustomButton>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="Last Name"
-                    fullWidth
-                    {...register("lastName")}
-                    error={!!errors.lastName}
-                    helperText={errors.lastName?.message || ""}
-                    variant="filled"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Email"
-                    type="email"
-                    fullWidth
-                    {...register("email")}
-                    error={!!errors.email}
-                    helperText={errors.email?.message || ""}
-                    variant="filled"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth variant="filled">
-                    <InputLabel>Gender</InputLabel>
-                    <Controller
-                      name="gender"
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          error={!!errors.gender}
-                          defaultValue={gender}
-                        >
-                          <MenuItem value="">Please select a gender</MenuItem>
-                          <MenuItem value="male">Male</MenuItem>
-                          <MenuItem value="female">Female</MenuItem>
-                          <MenuItem value="other">Other</MenuItem>
-                        </Select>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+
+        {editPassword && (
+          <Card sx={{ marginTop: 2 }}>
+            <CardHeader
+              title="Change Password"
+              titleTypographyProps={{
+                variant: "h6",
+              }}
+              sx={{
+                backgroundColor: "#e2e6e7",
+                borderBottom: "1px solid #ddd",
+              }}
+            />
+            <CardContent>
+              <form
+                onSubmit={handleSubmitChangePassword(
+                  handleChangePasswordSubmit
+                )}
+              >
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Current Password"
+                      type={passwordVisible ? "text" : "password"}
+                      fullWidth
+                      {...registerChangePassword("currentPassword")}
+                      error={!!changePasswordErrors.currentPassword}
+                      helperText={getErrorMessage(
+                        changePasswordErrors.currentPassword?.message
+                      )}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={togglePasswordVisibility}
+                              edge="end"
+                            >
+                              {passwordVisible ? (
+                                <VisibilityOffOutlined />
+                              ) : (
+                                <VisibilityOutlined />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="New Password"
+                      type={passwordVisible ? "text" : "password"}
+                      fullWidth
+                      {...registerChangePassword("newPassword")}
+                      error={!!changePasswordErrors.newPassword}
+                      helperText={getErrorMessage(
+                        changePasswordErrors.newPassword?.message
                       )}
                     />
-                    {errors.gender && (
-                      <Typography fontSize="12px" color="error">
-                        {errors.gender.message}
-                      </Typography>
-                    )}
-                  </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="Confirm Password"
+                      type={passwordVisible ? "text" : "password"}
+                      fullWidth
+                      {...registerChangePassword("confirmPassword")}
+                      error={!!changePasswordErrors.confirmPassword}
+                      helperText={getErrorMessage(
+                        changePasswordErrors.confirmPassword?.message
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <CustomButton variant="contained" type="submit">
+                      Change Password
+                    </CustomButton>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <CustomButton variant="contained" type="submit">
-                    Save Changes
-                  </CustomButton>
-                </Grid>
-              </Grid>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-
-      {editPassword && (
-        <Card sx={{ marginTop: 2 }}>
-          <CardHeader
-            title="Change Password"
-            titleTypographyProps={{
-              variant: "h6",
-            }}
-            sx={{
-              backgroundColor: "#e2e6e7",
-              borderBottom: "1px solid #ddd",
-            }}
-          />
-          <CardContent>
-            <form
-              onSubmit={handleSubmitChangePassword(handleChangePasswordSubmit)}
-            >
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Current Password"
-                    type={passwordVisible ? "text" : "password"}
-                    fullWidth
-                    {...registerChangePassword("currentPassword")}
-                    error={!!changePasswordErrors.currentPassword}
-                    helperText={getErrorMessage(
-                      changePasswordErrors.currentPassword?.message
-                    )}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={togglePasswordVisibility}
-                            edge="end"
-                          >
-                            {passwordVisible ? (
-                              <VisibilityOffOutlined />
-                            ) : (
-                              <VisibilityOutlined />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="New Password"
-                    type={passwordVisible ? "text" : "password"}
-                    fullWidth
-                    {...registerChangePassword("newPassword")}
-                    error={!!changePasswordErrors.newPassword}
-                    helperText={getErrorMessage(
-                      changePasswordErrors.newPassword?.message
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    label="Confirm Password"
-                    type={passwordVisible ? "text" : "password"}
-                    fullWidth
-                    {...registerChangePassword("confirmPassword")}
-                    error={!!changePasswordErrors.confirmPassword}
-                    helperText={getErrorMessage(
-                      changePasswordErrors.confirmPassword?.message
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <CustomButton variant="contained" type="submit">
-                    Change Password
-                  </CustomButton>
-                </Grid>
-              </Grid>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-    </Paper>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+      </Paper>
+    </>
   );
 };
 
