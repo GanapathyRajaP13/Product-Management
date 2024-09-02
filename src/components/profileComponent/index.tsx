@@ -26,6 +26,8 @@ import CustomButton from "../atoms/customButton";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
 import ProfileModal from "../profileModal";
 import { logout } from "../../redux/authSlices";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const genderEnum = z.enum(["male", "female", "other"]);
 
@@ -67,14 +69,19 @@ const editProfileSchema = z.object({
 
 const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(6, "Current password is required"),
-    newPassword: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(6, "Confirm password is required"),
+    currentPassword: z.string().min(5, "Current password is required"),
+    newPassword: z.string().min(5, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(5, "Confirm password is required"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+type Profile = {
+  type: string;
+  data: object;
+};
 
 const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
   const {
@@ -94,7 +101,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
   const [editProfile, setEditProfile] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [profileData, setProfileData] = useState<object>({});
+  const [userInfo, setData] = useState<Profile>({
+    type: "",
+    data: {},
+  });
 
   const onModalClose = () => {
     setModalVisible(false);
@@ -115,30 +125,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
     },
   });
 
-  const onOtpSubmit = async () => {
-    const payload = {
-      ...profileData,
-      id: id,
-    };
-    try {
-      const response: AxiosResponse = await apiClient.post(
-        "users/editProfile",
-        { info: payload }
-      );
-      if (response.data.success) {
-        setEditProfile(false);
-        dispatch(logout());
-      }
-    } catch (error) {
-      console.error("Error Edit Profile Data:", error);
-    }
-  };
-
-  const handleEditProfileSubmit = async (data: any) => {
-    setModalVisible(true);
-    setProfileData(data);
-  };
-
   const {
     register: registerChangePassword,
     handleSubmit: handleSubmitChangePassword,
@@ -148,8 +134,56 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
     resolver: zodResolver(changePasswordSchema),
   });
 
+  const onOtpSubmit = async () => {
+    if (userInfo.type === "profile") {
+      const payload = {
+        ...userInfo.data,
+        id: id,
+      };
+      try {
+        const response: AxiosResponse = await apiClient.post(
+          "users/editProfile",
+          { info: payload }
+        );
+        if (response.data.success) {
+          setEditProfile(false);
+          dispatch(logout());
+        }
+      } catch (error) {
+        console.error("Error Edit Profile Data:", error);
+      }
+    } else {
+      const payload = {
+        ...userInfo.data,
+        id: id,
+      };
+      try {
+        const response: AxiosResponse = await apiClient.post(
+          "users/changePassword",
+          { info: payload }
+        );
+        if (response.data.success) {
+          toast.success(response.data.message);
+          setEditProfile(false);
+          dispatch(logout());
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        console.error("Error Edit Profile Data:", error);
+      }
+    }
+  };
+
+  const handleEditProfileSubmit = async (data: any) => {
+    setModalVisible(true);
+    setData({ type: "profile", data: data });
+  };
+
   const handleChangePasswordSubmit = (data: any) => {
     console.log("Change Password Data:", data);
+    setModalVisible(true);
+    setData({ type: "password", data: data });
   };
 
   const getErrorMessage = (error: any) => {
@@ -413,6 +447,17 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
         onClose={onModalClose}
         onSubmit={onOtpSubmit}
         userInfo={userData}
+      />
+      <ToastContainer
+        position="top-right"
+        autoClose={6000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
       />
     </>
   );

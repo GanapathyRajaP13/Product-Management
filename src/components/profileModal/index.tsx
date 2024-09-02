@@ -33,6 +33,7 @@ const ProfileModal: React.FC<{
 }> = ({ open, onClose, onSubmit, userInfo }) => {
   const { email, firstname, lastname } = userInfo;
   const [otpConfirm, setOtpConfirm] = useState(false);
+  const [generateOTP, setGenerateOTP] = useState(false);
 
   const {
     register,
@@ -50,6 +51,7 @@ const ProfileModal: React.FC<{
   };
 
   const generateOtp = async () => {
+    setGenerateOTP(true);
     try {
       const response: AxiosResponse = await apiClient.post(
         "users/generateOtp",
@@ -57,6 +59,9 @@ const ProfileModal: React.FC<{
       );
       if (response.data.success) {
         setOtpConfirm(true);
+        setGenerateOTP(false);
+      } else {
+        setGenerateOTP(false);
       }
     } catch (error) {
       console.error("Error Edit Profile Data:", error);
@@ -73,6 +78,7 @@ const ProfileModal: React.FC<{
         onSubmit();
         onClose();
         reset();
+        setOtpConfirm(false);
       }
     } catch (error) {
       console.error("Error Edit Profile Data:", error);
@@ -107,7 +113,7 @@ const ProfileModal: React.FC<{
           }}
         >
           <Typography variant="h6" gutterBottom>
-            {!otpConfirm ? "Generate OTP..." : "Enter OTP"}
+            {!otpConfirm ? "Generate OTP" : "Enter OTP"}
           </Typography>
           <IconButton onClick={onCloseModal}>
             <CloseIcon />
@@ -117,9 +123,15 @@ const ProfileModal: React.FC<{
         {!otpConfirm ? (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Typography>
-              You Will be logged out after successfull update!
+              {generateOTP
+                ? "Your OTP is generating please wait!..."
+                : "You Will be logged out after successfull update!"}
             </Typography>
-            <CustomButton variant="contained" onClick={generateOtp}>
+            <CustomButton
+              variant="contained"
+              disabled={generateOTP}
+              onClick={generateOtp}
+            >
               Generate OTP
             </CustomButton>
           </Box>
@@ -138,7 +150,7 @@ const ProfileModal: React.FC<{
                 fullWidth
               />
               <CustomButton variant="contained" type="submit">
-                Verify OTP
+                Verify OTP / update
               </CustomButton>
             </Box>
           </form>
