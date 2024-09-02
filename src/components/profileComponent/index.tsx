@@ -17,12 +17,15 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
+import { useDispatch } from "react-redux";
 import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomButton from "../atoms/customButton";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
+import ProfileModal from "../profileModal";
+import { logout } from "../../redux/authSlices";
 
 const genderEnum = z.enum(["male", "female", "other"]);
 
@@ -85,11 +88,17 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
     UserType,
     id,
   } = userData;
-
+  const dispatch = useDispatch();
   const userRole = getUserRole(UserType);
   const [editPassword, setEditPassword] = useState(false);
   const [editProfile, setEditProfile] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [profileData, setProfileData] = useState<object>({});
+
+  const onModalClose = () => {
+    setModalVisible(false);
+  };
 
   const {
     control,
@@ -106,21 +115,28 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
     },
   });
 
-  const handleEditProfileSubmit = async (data: any) => {
+  const onOtpSubmit = async () => {
     const payload = {
-      ...data,
+      ...profileData,
       id: id,
     };
     try {
-      const response: AxiosResponse<UserData> = await apiClient.post(
+      const response: AxiosResponse = await apiClient.post(
         "users/editProfile",
         { info: payload }
       );
-      console.log("Response Data:", response.data);
-      setEditPassword(false);
+      if (response.data.success) {
+        setEditProfile(false);
+        dispatch(logout());
+      }
     } catch (error) {
       console.error("Error Edit Profile Data:", error);
     }
+  };
+
+  const handleEditProfileSubmit = async (data: any) => {
+    setModalVisible(true);
+    setProfileData(data);
   };
 
   const {
@@ -392,6 +408,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
           </Card>
         )}
       </Paper>
+      <ProfileModal
+        open={modalVisible}
+        onClose={onModalClose}
+        onSubmit={onOtpSubmit}
+        userInfo={userData}
+      />
     </>
   );
 };
