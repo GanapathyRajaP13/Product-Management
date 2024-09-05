@@ -266,16 +266,21 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
         </Grid>
 
         <Divider sx={{ marginY: 3 }} />
-
-        <CustomButton
-          sx={{ marginRight: 2 }}
-          onClick={() => getFormVisible("profile")}
-        >
-          Edit Profile
-        </CustomButton>
-        <CustomButton onClick={() => getFormVisible("password")}>
-          Change Password
-        </CustomButton>
+        <Grid container>
+          <Grid item xs={12} sm={2}>
+            <CustomButton
+              sx={{ marginRight: 2 }}
+              onClick={() => getFormVisible("profile")}
+            >
+              Edit Profile
+            </CustomButton>
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <CustomButton onClick={() => getFormVisible("password")}>
+              Change Password
+            </CustomButton>
+          </Grid>
+        </Grid>
 
         {editProfile && (
           <Card sx={{ marginTop: 2 }}>

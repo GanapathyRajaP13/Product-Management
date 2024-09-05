@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import ReviewsModal from "../reviewModal";
 import {
   CircularProgress,
-  Typography,
   Box,
   Card,
   CardHeader,
@@ -23,7 +22,7 @@ const ProductsTable: React.FC = () => {
   );
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
-    pageSize: 8,
+    pageSize: 10,
   });
 
   useEffect(() => {
@@ -32,8 +31,15 @@ const ProductsTable: React.FC = () => {
         const response: AxiosResponse<{ products: any }> = await apiClient.get(
           "users/products"
         );
-        setProducts(response.data.products);
-        setFilteredProducts(response.data.products)
+
+        const productsData = response.data.products.map(
+          (product: any, index: number) => ({
+            ...product,
+            id: index + 1,
+          })
+        );
+        setProducts(productsData);
+        setFilteredProducts(productsData);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -89,19 +95,6 @@ const ProductsTable: React.FC = () => {
       flex: 3,
       renderHeader: CustomHeader,
       sortable: false,
-      renderCell: (params) => (
-        <Typography
-          sx={{
-            fontSize: "12px",
-            overflowWrap: "break-word",
-            wordWrap: "break-word",
-            textOverflow: "ellipsis",
-            whiteSpace: "normal",
-          }}
-        >
-          {params.value}
-        </Typography>
-      ),
     },
     {
       field: "price",
@@ -142,7 +135,10 @@ const ProductsTable: React.FC = () => {
       renderHeader: CustomHeader,
       sortable: false,
       renderCell: (params) => (
-        <CustomButton onClick={() => setSelectedProductId(params.row.id)}>
+        <CustomButton
+          sx={{ height: "30px", fontSize: "10px" }}
+          onClick={() => setSelectedProductId(params.row.id)}
+        >
           View
         </CustomButton>
       ),
@@ -180,16 +176,29 @@ const ProductsTable: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ marginTop: 2 }}>
-        <TextField placeholder="Search..." onChange={handleSearch} sx={{'&.MuiInputBase-input-MuiOutlinedInput-input':{
-          height:'20px'
-        }}} />
-      </Box>
-      <Card sx={{ marginTop: 2 }}>
+      <Card sx={{ marginTop: 1 }}>
         <CardHeader
           title="PRODUCTS LIST"
           action={
-            <CustomButton onClick={handleAddProduct}>Add Product</CustomButton>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              <TextField
+                placeholder="Search..."
+                onChange={handleSearch}
+                size="small"
+                sx={{
+                  width: "200px",
+                }}
+              />
+              <CustomButton onClick={handleAddProduct}>
+                Add Product
+              </CustomButton>
+            </Box>
           }
           titleTypographyProps={{
             variant: "h6",
@@ -197,6 +206,9 @@ const ProductsTable: React.FC = () => {
           sx={{
             backgroundColor: "#e2e6e7",
             borderBottom: "1px solid #ddd",
+            padding: "8px 16px",
+            display: "flex",
+            alignItems: "center",
           }}
         />
         <CardContent
@@ -212,10 +224,11 @@ const ProductsTable: React.FC = () => {
             columns={columns}
             pagination
             autoHeight
-            pageSizeOptions={[8]}
+            pageSizeOptions={[10]}
             paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
             disableColumnMenu
+            rowHeight={40}
             sx={{
               "& .MuiDataGrid-columnSeparator": {
                 display: "none",
@@ -227,6 +240,19 @@ const ProductsTable: React.FC = () => {
                 backgroundColor: "#f5f5f5 !important",
                 borderBottom: "1px solid #ddd",
                 borderRight: "1px solid #ccc",
+                height: "40px !important",
+              },
+              "& .MuiTypography-root": {
+                fontSize: "14px",
+              },
+              "& .MuiDataGrid-footerContainer": {
+                minHeight: "40px",
+                maxHeight: "40px", 
+              },
+              "& .MuiTablePagination-toolbar": {
+                minHeight: "40px",
+                maxHeight: "40px",
+                padding:"0px"
               },
               overflowX: "hidden",
             }}
