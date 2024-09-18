@@ -166,7 +166,7 @@ const LoginForm: React.FC = () => {
                 label="Username"
                 fullWidth={true}
                 {...register("username")}
-                placeholder="please enter username..."
+                placeholder="username..."
                 error={!!loginErrors.username}
                 errorMessage={getErrorMessage(loginErrors.username)}
                 isErrorRequired={true}
@@ -180,7 +180,7 @@ const LoginForm: React.FC = () => {
                 error={!!loginErrors.password}
                 errorMessage={getErrorMessage(loginErrors.password)}
                 fullWidth={true}
-                placeholder="please enter password..."
+                placeholder="password..."
                 isErrorRequired={true}
                 InputProps={{
                   endAdornment: (
