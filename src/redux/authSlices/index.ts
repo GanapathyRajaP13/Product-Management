@@ -109,7 +109,7 @@ const authSlice = createSlice({
           action.error.message === "Request failed with status code 404"
             ? "No user found."
             : action.error.message === "Request failed with status code 401"
-            ? "Invalid credentials"
+            ? "Password Incorrect"
             : "Failed to login";
       });
   },

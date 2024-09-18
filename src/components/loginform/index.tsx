@@ -3,7 +3,7 @@ import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../redux/authSlices";
+import { login, logout } from "../../redux/authSlices";
 import { RootState, AppDispatch } from "../../redux/store";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
 import {
@@ -23,6 +23,7 @@ import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CustomButton from "../atoms/customButton";
+import { InputField } from "../atoms/customTextField";
 
 const genderEnum = z.enum(["male", "female", "other"]);
 
@@ -131,6 +132,8 @@ const LoginForm: React.FC = () => {
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");
+    } else {
+      dispatch(logout());
     }
   }, [isAuthenticated, navigate]);
 
@@ -153,35 +156,32 @@ const LoginForm: React.FC = () => {
             borderRadius: "8px",
           }}
         >
-          <Typography textAlign="center" mb={3}>
+          <Typography textAlign="center" mb={1}>
             {isLogin ? "Login" : "Register"}
           </Typography>
 
           {isLogin ? (
             <>
-              <TextField
+              <InputField
                 label="Username"
-                fullWidth
+                fullWidth={true}
                 {...register("username")}
+                placeholder="please enter username..."
                 error={!!loginErrors.username}
-                helperText={getErrorMessage(loginErrors.username)}
-                variant="filled"
-                sx={{ mb: 2 }}
+                errorMessage={getErrorMessage(loginErrors.username)}
+                isErrorRequired={true}
+                required={true}
               />
-              <TextField
+              <InputField
                 label="Password"
+                required={true}
                 type={confirmPasswordVisible ? "text" : "password"}
-                fullWidth
                 {...register("password")}
                 error={!!loginErrors.password}
-                helperText={getErrorMessage(loginErrors.password)}
-                variant="filled"
-                sx={{
-                  mb: 2,
-                  ".MuiInputBase-root.MuiFilledInput-root": {
-                    backgroundColor: "#e8f0fe",
-                  },
-                }}
+                errorMessage={getErrorMessage(loginErrors.password)}
+                fullWidth={true}
+                placeholder="please enter password..."
+                isErrorRequired={true}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment
@@ -330,7 +330,7 @@ const LoginForm: React.FC = () => {
             type="submit"
             fullWidth
             disabled={loading}
-            sx={{ mt: 2 }}
+            sx={{ mt: 1 }}
           >
             {loading
               ? isLogin
