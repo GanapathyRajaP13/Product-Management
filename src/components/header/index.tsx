@@ -7,14 +7,16 @@ import {
   Box,
   Popover,
   List,
+  Avatar,
 } from "@mui/material";
 import { connect, ConnectedProps, useDispatch } from "react-redux";
 import { logout, UserData } from "../../redux/authSlices";
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Sidebar from "../sideBar";
 import CommonListItemButton from "../atoms/customListItemButton";
 import { RootState } from "../../redux/store";
+import Divider from "@mui/material/Divider";
+import profileImage from "../../assets/profile.png";
 
 const Header: React.FC<PropsFromRedux> = (props) => {
   const { userData } = props;
@@ -77,7 +79,11 @@ const Header: React.FC<PropsFromRedux> = (props) => {
             Product Management
           </Typography>
           <IconButton color="inherit" onClick={handleClick}>
-            <AccountCircleIcon sx={{ fontSize: "40px" }} />
+            <Avatar
+              alt={userData.username}
+              src={profileImage}
+              sx={{ fontSize: "40px", backgroundColor:'grey', p:'4px' }}
+            />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -111,7 +117,11 @@ const Header: React.FC<PropsFromRedux> = (props) => {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <AccountCircleIcon sx={{ fontSize: "40px", mr: 1 }} />
+            <Avatar
+              alt={userData.username}
+              src={profileImage}
+              sx={{ fontSize: "40px", mr: 1 }}
+            />
             <Box sx={{ ml: 1 }}>
               <Typography variant="subtitle1" fontWeight="bold">
                 {userData.username}
@@ -124,7 +134,8 @@ const Header: React.FC<PropsFromRedux> = (props) => {
               </Typography>
             </Box>
           </Box>
-          <List component="nav" sx={{ mt: 2 }}>
+          <Divider sx={{ mt: 2 }} />
+          <List component="nav">
             <CommonListItemButton to="/profile" primaryText="Profile" />
             <CommonListItemButton onClick={handleLogout} primaryText="Logout" />
           </List>

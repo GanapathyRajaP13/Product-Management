@@ -15,11 +15,11 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar }) => {
       open={open}
       sx={{
         width: 240,
-        
+
         flexShrink: 0,
         "& .MuiDrawer-paper": {
           width: 240,
-          color:'white',
+          color: "#fafcfc",
           boxSizing: "border-box",
           mt: 8,
           backgroundColor: "#0f262f",
@@ -27,8 +27,16 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar }) => {
       }}
     >
       <List onClick={toggleSidebar}>
-        <CommonListItemButton to="/dashboard" primaryText="Dashboard" />
-        <CommonListItemButton to="/products" primaryText="Products" />
+        <CommonListItemButton
+          sx={{ pl: 2 }}
+          to="/dashboard"
+          primaryText="Dashboard"
+        />
+        <CommonListItemButton
+          sx={{ pl: 2 }}
+          to="/products"
+          primaryText="Products"
+        />
       </List>
     </Drawer>
   );
