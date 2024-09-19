@@ -4,6 +4,7 @@ export const inputFieldStyle = {
     "& .MuiOutlinedInput-input": {
       width: "100%",
       fontWeight: "normal",
+      padding: "8px 12px",
     },
     "& .Mui-focused.MuiOutlinedInput-notchedOutline": {
       borderColor: "#E9E9E9 !important",
@@ -45,8 +46,6 @@ export const inputFieldStyle = {
     color: "#F44F5A",
   },
   labelStyle: {
-    fontSize: "12px",
-    color: "#3B3B3B",
     "& span": {
       color: "#F44F5A",
     },
