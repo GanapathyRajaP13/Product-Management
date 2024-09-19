@@ -53,8 +53,6 @@ const getUserRole = (userType: number): string => {
       return "Admin";
     case 2:
       return "User";
-    case 3:
-      return "Manager";
     default:
       return "Guest";
   }

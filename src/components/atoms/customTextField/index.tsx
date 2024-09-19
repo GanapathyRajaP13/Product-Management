@@ -14,6 +14,7 @@ interface InputFieldProps {
   errorMessage?: string;
   type?: string;
   inputStyle?: SxProps<Theme>;
+  rootSx?: SxProps<Theme>;
   required?: boolean;
   isLabelRequired?: boolean;
   isErrorRequired?: boolean;
@@ -36,6 +37,7 @@ export const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
     const {
       className = "",
       sx = {},
+      rootSx,
       type = "text",
       label,
       isLabelRequired = true,
@@ -57,7 +59,7 @@ export const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
     return (
       <Box
         sx={[
-          inputFieldStyle.rootSx,
+          rootSx ? rootSx : inputFieldStyle.rootSx,
           {
             "& .MuiFilledInput-root.Mui-error": {
               border: "1px solid #F44F5A",

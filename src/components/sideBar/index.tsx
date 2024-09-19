@@ -15,18 +15,20 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar }) => {
       open={open}
       sx={{
         width: 240,
+        
         flexShrink: 0,
         "& .MuiDrawer-paper": {
           width: 240,
+          color:'white',
           boxSizing: "border-box",
           mt: 8,
-          backgroundColor: "#eeeeee",
+          backgroundColor: "#0f262f",
         },
       }}
     >
       <List onClick={toggleSidebar}>
-        <CommonListItemButton to="/products" primaryText="Products" />
         <CommonListItemButton to="/dashboard" primaryText="Dashboard" />
+        <CommonListItemButton to="/products" primaryText="Products" />
       </List>
     </Drawer>
   );

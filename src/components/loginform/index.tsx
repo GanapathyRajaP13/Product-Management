@@ -7,15 +7,10 @@ import { login, logout } from "../../redux/authSlices";
 import { RootState, AppDispatch } from "../../redux/store";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
 import {
-  TextField,
   Container,
   Box,
   Typography,
   InputAdornment,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
   Grid,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -24,12 +19,15 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CustomButton from "../atoms/customButton";
 import { InputField } from "../atoms/customTextField";
+import { SelectField } from "../atoms/customSelectDropDown";
 
 const genderEnum = z.enum(["male", "female", "other"]);
+const roleEnum = z.enum(["1", "2"]);
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
+  role: roleEnum,
 });
 
 const registerSchema = z
@@ -82,8 +80,11 @@ const LoginForm: React.FC = () => {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     if (isLogin) {
+      const loginData = data as LoginFormData;
       const payload = {
-        ...data,
+        username: loginData.username,
+        password: loginData.password,
+        role: loginData.role,
         time: tokenExpirationTime,
       };
       try {
@@ -93,9 +94,10 @@ const LoginForm: React.FC = () => {
       }
     } else {
       try {
+        const registerData = data as RegisterFormData;
         const response: AxiosResponse = await apiClient.post(
           "auth/register",
-          data
+          registerData
         );
         toast.success(response.data);
         registerLogin();
@@ -149,7 +151,7 @@ const LoginForm: React.FC = () => {
           component="form"
           onSubmit={handleSubmit(onSubmit)}
           width="100%"
-          maxWidth={isLogin ? "300px" : "600px"}
+          maxWidth={isLogin ? "350px" : "600px"}
           sx={{
             backgroundColor: "rgba(255, 255, 255, 0.9)",
             p: 2,
@@ -200,40 +202,62 @@ const LoginForm: React.FC = () => {
                   ),
                 }}
               />
+              <SelectField
+                label="Role"
+                placeholder="Select a role..."
+                options={[
+                  { label: "Admin", value: "1" },
+                  { label: "User", value: "2" },
+                ]}
+                error={!!loginErrors.role}
+                errorMessage="Please select a role"
+                {...register("role")}
+                required
+                widthStyle={{ minWidth: 150, height: 35 }}
+              />
             </>
           ) : (
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <TextField
+                <InputField
                   label="First Name"
                   fullWidth
+                  rootSx={{ mb: 0 }}
                   {...register("firstName")}
+                  placeholder="first name..."
                   error={!!registrationErrors.firstName}
-                  helperText={getErrorMessage(registrationErrors.firstName)}
-                  variant="filled"
+                  errorMessage={getErrorMessage(registrationErrors.firstName)}
+                  isErrorRequired={true}
+                  required={true}
                 />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <TextField
+                <InputField
                   label="Last Name"
                   fullWidth
+                  rootSx={{ mb: 0 }}
                   {...register("lastName")}
+                  placeholder="last name..."
                   error={!!registrationErrors.lastName}
-                  helperText={getErrorMessage(registrationErrors.lastName)}
-                  variant="filled"
+                  errorMessage={getErrorMessage(registrationErrors.lastName)}
+                  isErrorRequired={true}
+                  required={true}
                 />
               </Grid>
 
               <Grid item xs={6}>
-                <TextField
+                <InputField
                   label="Password"
+                  required={true}
+                  rootSx={{ mb: 0 }}
                   type={confirmPasswordVisible ? "text" : "password"}
-                  fullWidth
                   {...register("password")}
                   error={!!registrationErrors.password}
-                  helperText={getErrorMessage(registrationErrors.password)}
-                  variant="filled"
+                  errorMessage={getErrorMessage(registrationErrors.password)}
+                  fullWidth
+                  placeholder="password..."
+                  isErrorRequired={true}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment
@@ -255,16 +279,19 @@ const LoginForm: React.FC = () => {
               </Grid>
 
               <Grid item xs={6}>
-                <TextField
+                <InputField
                   label="Confirm Password"
+                  required={true}
+                  rootSx={{ mb: 0 }}
                   type={confirmPasswordVisible ? "text" : "password"}
-                  fullWidth
                   {...register("confirmPassword")}
                   error={!!registrationErrors.confirmPassword}
-                  helperText={getErrorMessage(
+                  errorMessage={getErrorMessage(
                     registrationErrors.confirmPassword
                   )}
-                  variant="filled"
+                  fullWidth
+                  placeholder="confirm password..."
+                  isErrorRequired={true}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment
@@ -286,36 +313,35 @@ const LoginForm: React.FC = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <TextField
+                <InputField
                   label="Email"
                   type="email"
                   fullWidth
+                  rootSx={{ mb: 0 }}
                   {...register("email")}
+                  placeholder="email..."
                   error={!!registrationErrors.email}
-                  helperText={getErrorMessage(registrationErrors.email)}
-                  variant="filled"
+                  errorMessage={getErrorMessage(registrationErrors.email)}
+                  isErrorRequired={true}
+                  required={true}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <FormControl fullWidth variant="filled">
-                  <InputLabel>Gender</InputLabel>
-                  <Select
-                    {...register("gender")}
-                    error={!!registrationErrors.gender}
-                    defaultValue=""
-                  >
-                    <MenuItem value="">Please select a gender</MenuItem>
-                    <MenuItem value="male">Male</MenuItem>
-                    <MenuItem value="female">Female</MenuItem>
-                    <MenuItem value="other">Other</MenuItem>
-                  </Select>
-                  {!!registrationErrors.gender && (
-                    <Typography fontSize="12px" color="error">
-                      Gender is required
-                    </Typography>
-                  )}
-                </FormControl>
+                <SelectField
+                  label="Gender"
+                  placeholder="Select gender..."
+                  options={[
+                    { label: "Male", value: "male" },
+                    { label: "Female", value: "female" },
+                    { label: "Other", value: "other" },
+                  ]}
+                  error={!!registrationErrors.gender}
+                  errorMessage="Please select gender"
+                  {...register("gender")}
+                  required
+                  fullWidth
+                />
               </Grid>
             </Grid>
           )}

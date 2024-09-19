@@ -48,15 +48,18 @@ export const login = createAsyncThunk(
   async ({
     username,
     password,
+    role,
     time,
   }: {
     username: string;
     password: string;
+    role: string;
     time: number;
   }) => {
     const response = await apiClient.post("auth/login", {
       username,
       password,
+      role,
       expiresInMins: time,
     });
     return response.data;

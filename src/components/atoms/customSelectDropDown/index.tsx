@@ -1,7 +1,8 @@
-import { Box, InputLabel, Select, MenuItem, Typography } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material";
+import { Box, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
 import { forwardRef } from "react";
 import { inputFieldStyle } from "./style";
-import type { SxProps, Theme } from "@mui/material";
 
 interface SelectFieldProps {
   label?: string;
@@ -19,6 +20,7 @@ interface SelectFieldProps {
   widthStyle?: { minWidth: number; height: number };
   options: Array<{ value: string | number; label: string }>;
   name?: string;
+  onChange?: (event: SelectChangeEvent<unknown>) => void;
 }
 
 export const SelectField = forwardRef<HTMLDivElement, SelectFieldProps>(
@@ -38,9 +40,15 @@ export const SelectField = forwardRef<HTMLDivElement, SelectFieldProps>(
       error,
       errorMessage,
       options = [],
-      name,
+      onChange,
       ...rest
     } = props;
+
+    const handleChange = (event: SelectChangeEvent<unknown>) => {
+      if (onChange) {
+        onChange(event); // Call React Hook Form's onChange function
+      }
+    };
 
     return (
       <Box
@@ -83,6 +91,7 @@ export const SelectField = forwardRef<HTMLDivElement, SelectFieldProps>(
           defaultValue=""
           fullWidth={fullWidth}
           error={error}
+          onChange={handleChange} // Use the custom handler
           sx={{ ...inputFieldStyle.selectSx, ...widthStyle }}
           {...rest}
         >
