@@ -17,6 +17,7 @@ interface SelectFieldProps {
   error?: boolean;
   fullWidth?: boolean;
   placeholder?: string;
+  defaultValue?: string;
   widthStyle?: { minWidth: number; height: number };
   options: Array<{ value: string | number; label: string }>;
   name?: string;
@@ -34,6 +35,7 @@ export const SelectField = forwardRef<HTMLDivElement, SelectFieldProps>(
       value,
       widthStyle,
       labelStyle,
+      defaultValue = "",
       placeholder = "",
       fullWidth = false,
       required,
@@ -88,7 +90,7 @@ export const SelectField = forwardRef<HTMLDivElement, SelectFieldProps>(
         <Select
           value={value}
           displayEmpty
-          defaultValue=""
+          defaultValue={defaultValue}
           fullWidth={fullWidth}
           error={error}
           onChange={handleChange} // Use the custom handler

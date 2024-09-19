@@ -5,21 +5,15 @@ import {
   Grid,
   Paper,
   Avatar,
-  TextField,
   Divider,
   Card,
   CardHeader,
   CardContent,
-  FormControl,
-  MenuItem,
-  Select,
-  InputLabel,
   InputAdornment,
-  IconButton,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { VisibilityOutlined, VisibilityOffOutlined } from "@mui/icons-material";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomButton from "../atoms/customButton";
@@ -28,6 +22,8 @@ import ProfileModal from "../profileModal";
 import { logout } from "../../redux/authSlices";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { InputField } from "../atoms/customTextField";
+import { SelectField } from "../atoms/customSelectDropDown";
 
 const genderEnum = z.enum(["male", "female", "other"]);
 
@@ -68,7 +64,7 @@ const editProfileSchema = z.object({
 const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(5, "Current password is required"),
-    newPassword: z.string().min(5, "Password must be at least 6 characters"),
+    newPassword: z.string().min(5, "Password must be at least 5 characters"),
     confirmPassword: z.string().min(5, "Confirm password is required"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -109,7 +105,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
   };
 
   const {
-    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -265,15 +260,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
 
         <Divider sx={{ marginY: 3 }} />
         <Grid container>
-          <Grid item xs={12} sm={2}>
-            <CustomButton
-              sx={{ marginRight: 2 }}
-              onClick={() => getFormVisible("profile")}
-            >
+          <Grid item xs={6} sm={2}>
+            <CustomButton onClick={() => getFormVisible("profile")}>
               Edit Profile
             </CustomButton>
           </Grid>
-          <Grid item xs={12} sm={2}>
+          <Grid item xs={6} sm={2}>
             <CustomButton onClick={() => getFormVisible("password")}>
               Change Password
             </CustomButton>
@@ -296,61 +288,60 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
               <form onSubmit={handleSubmit(handleEditProfileSubmit)}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
-                    <TextField
+                    <InputField
                       label="First Name"
-                      fullWidth
+                      fullWidth={true}
                       {...register("firstName")}
+                      placeholder="first name..."
                       error={!!errors.firstName}
-                      helperText={errors.firstName?.message || ""}
-                      variant="filled"
+                      errorMessage={errors.firstName?.message || ""}
+                      isErrorRequired={true}
+                      required={true}
+                      rootSx={{ mb: 0 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
+                    <InputField
                       label="Last Name"
-                      fullWidth
+                      fullWidth={true}
                       {...register("lastName")}
+                      placeholder="last name..."
                       error={!!errors.lastName}
-                      helperText={errors.lastName?.message || ""}
-                      variant="filled"
+                      errorMessage={errors.lastName?.message || ""}
+                      isErrorRequired={true}
+                      rootSx={{ mb: 0 }}
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField
+                    <InputField
                       label="Email"
+                      fullWidth={true}
                       type="email"
-                      fullWidth
                       {...register("email")}
+                      placeholder="email..."
                       error={!!errors.email}
-                      helperText={errors.email?.message || ""}
-                      variant="filled"
+                      errorMessage={errors.email?.message || ""}
+                      isErrorRequired={true}
+                      required={true}
+                      rootSx={{ mb: 0 }}
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <FormControl fullWidth variant="filled">
-                      <InputLabel>Gender</InputLabel>
-                      <Controller
-                        name="gender"
-                        control={control}
-                        render={({ field }) => (
-                          <Select
-                            {...field}
-                            error={!!errors.gender}
-                            defaultValue={gender}
-                          >
-                            <MenuItem value="">Please select a gender</MenuItem>
-                            <MenuItem value="male">Male</MenuItem>
-                            <MenuItem value="female">Female</MenuItem>
-                            <MenuItem value="other">Other</MenuItem>
-                          </Select>
-                        )}
-                      />
-                      {errors.gender && (
-                        <Typography fontSize="12px" color="error">
-                          {errors.gender.message}
-                        </Typography>
-                      )}
-                    </FormControl>
+                    <SelectField
+                      label="Gender"
+                      placeholder="Select gender..."
+                      defaultValue={gender}
+                      options={[
+                        { label: "Male", value: "male" },
+                        { label: "Female", value: "female" },
+                        { label: "Other", value: "other" },
+                      ]}
+                      error={!!errors.gender}
+                      errorMessage={errors?.gender?.message}
+                      {...register("gender")}
+                      required
+                      fullWidth
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <CustomButton variant="contained" type="submit">
@@ -383,55 +374,68 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
               >
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <TextField
+                    <InputField
                       label="Current Password"
+                      required={true}
+                      rootSx={{ mb: 0 }}
                       type={passwordVisible ? "text" : "password"}
-                      fullWidth
                       {...registerChangePassword("currentPassword")}
                       error={!!changePasswordErrors.currentPassword}
-                      helperText={getErrorMessage(
+                      errorMessage={getErrorMessage(
                         changePasswordErrors.currentPassword?.message
                       )}
+                      fullWidth
+                      placeholder="Current Password..."
+                      isErrorRequired={true}
                       InputProps={{
                         endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={togglePasswordVisibility}
-                              edge="end"
-                            >
-                              {passwordVisible ? (
-                                <VisibilityOffOutlined />
-                              ) : (
-                                <VisibilityOutlined />
-                              )}
-                            </IconButton>
+                          <InputAdornment
+                            sx={{
+                              cursor: "pointer",
+                            }}
+                            onClick={togglePasswordVisibility}
+                            position="end"
+                          >
+                            {passwordVisible ? (
+                              <VisibilityOffOutlined />
+                            ) : (
+                              <VisibilityOutlined />
+                            )}
                           </InputAdornment>
                         ),
                       }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
+                    <InputField
                       label="New Password"
+                      fullWidth={true}
                       type={passwordVisible ? "text" : "password"}
-                      fullWidth
                       {...registerChangePassword("newPassword")}
+                      placeholder="New password..."
                       error={!!changePasswordErrors.newPassword}
-                      helperText={getErrorMessage(
+                      errorMessage={getErrorMessage(
                         changePasswordErrors.newPassword?.message
                       )}
+                      isErrorRequired={true}
+                      required={true}
+                      rootSx={{ mb: 0 }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
+                    <InputField
                       label="Confirm Password"
+                      fullWidth={true}
                       type={passwordVisible ? "text" : "password"}
-                      fullWidth
                       {...registerChangePassword("confirmPassword")}
+                      placeholder="Confirm password..."
                       error={!!changePasswordErrors.confirmPassword}
-                      helperText={getErrorMessage(
+                      errorMessage={getErrorMessage(
                         changePasswordErrors.confirmPassword?.message
                       )}
+                      isErrorRequired={true}
+                      required={true}
+                      rootSx={{ mb: 0 }}
                     />
                   </Grid>
                   <Grid item xs={12}>

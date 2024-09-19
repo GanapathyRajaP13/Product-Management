@@ -82,7 +82,7 @@ const Header: React.FC<PropsFromRedux> = (props) => {
             <Avatar
               alt={userData.username}
               src={profileImage}
-              sx={{ fontSize: "40px", backgroundColor:'grey', p:'4px' }}
+              sx={{ fontSize: "40px", backgroundColor:'#32464e', p:'4px' }}
             />
           </IconButton>
         </Toolbar>
