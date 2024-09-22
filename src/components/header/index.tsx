@@ -10,7 +10,7 @@ import {
   Avatar,
 } from "@mui/material";
 import { connect, ConnectedProps, useDispatch } from "react-redux";
-import { logout, UserData } from "../../redux/authSlices";
+import { logout, UserData, UserURL } from "../../redux/authSlices";
 import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from "../sideBar";
 import CommonListItemButton from "../atoms/customListItemButton";
@@ -19,7 +19,7 @@ import Divider from "@mui/material/Divider";
 import profileImage from "../../assets/profile.png";
 
 const Header: React.FC<PropsFromRedux> = (props) => {
-  const { userData } = props;
+  const { userData, userURL } = props;
   const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -82,13 +82,13 @@ const Header: React.FC<PropsFromRedux> = (props) => {
             <Avatar
               alt={userData.username}
               src={profileImage}
-              sx={{ fontSize: "40px", backgroundColor:'#32464e', p:'4px' }}
+              sx={{ fontSize: "40px", backgroundColor: "#32464e", p: "4px" }}
             />
           </IconButton>
         </Toolbar>
       </AppBar>
 
-      <Sidebar open={isVisible} toggleSidebar={toggleSidebar} />
+      <Sidebar open={isVisible} toggleSidebar={toggleSidebar} userURL={userURL} />
 
       <Popover
         id={id}
@@ -145,8 +145,11 @@ const Header: React.FC<PropsFromRedux> = (props) => {
   );
 };
 
-const mapStateToProps = (state: RootState): { userData: UserData } => ({
+const mapStateToProps = (
+  state: RootState
+): { userData: UserData; userURL: UserURL[] } => ({
   userData: state.auth.userData,
+  userURL: state.auth.userURL,
 });
 
 const connector = connect(mapStateToProps);

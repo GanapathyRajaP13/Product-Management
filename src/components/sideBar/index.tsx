@@ -1,13 +1,16 @@
 import React from "react";
 import { Drawer, List } from "@mui/material";
 import CommonListItemButton from "../atoms/customListItemButton";
+import { UserURL } from "../../redux/authSlices";
 
 interface SidebarProps {
   open: boolean;
   toggleSidebar: () => void;
+  userURL: UserURL[];
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar }) => {
+const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar, userURL }) => {
+  const url = userURL;
   return (
     <Drawer
       variant="persistent"
@@ -27,16 +30,15 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar }) => {
       }}
     >
       <List onClick={toggleSidebar}>
-        <CommonListItemButton
-          sx={{ pl: 2 }}
-          to="/dashboard"
-          primaryText="Dashboard"
-        />
-        <CommonListItemButton
-          sx={{ pl: 2 }}
-          to="/products"
-          primaryText="Products"
-        />
+        {url.map((url: UserURL) => {
+          return (
+            <CommonListItemButton
+              sx={{ pl: 2 }}
+              to={url.ScreenUrl}
+              primaryText={url.screenName}
+            />
+          );
+        })}
       </List>
     </Drawer>
   );

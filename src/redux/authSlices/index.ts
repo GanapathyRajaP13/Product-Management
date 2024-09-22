@@ -13,6 +13,12 @@ export interface UserData {
   id: string;
 }
 
+export interface UserURL {
+  id: string;
+  ScreenUrl: string;
+  screenName: string;
+}
+
 export interface AuthState {
   isAuthenticated: boolean;
   loading: boolean;
@@ -21,6 +27,7 @@ export interface AuthState {
   refreshToken: string | null;
   tokenExpirationTime: number;
   userData: UserData;
+  userURL: UserURL[];
 }
 
 const initialState: AuthState = {
@@ -30,6 +37,7 @@ const initialState: AuthState = {
   token: null,
   refreshToken: null,
   tokenExpirationTime: 30,
+  userURL: [],
   userData: {
     username: "",
     email: "",
@@ -86,6 +94,7 @@ const authSlice = createSlice({
         UserType: 2,
         id: "",
       };
+      state.userURL = [];
     },
     refreshTokens: (state, action) => {
       state.isAuthenticated = true;
@@ -105,6 +114,7 @@ const authSlice = createSlice({
         state.token = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.userData = action.payload.userData;
+        state.userURL = action.payload.userURL;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;

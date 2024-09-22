@@ -174,7 +174,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
   };
 
   const handleChangePasswordSubmit = (data: any) => {
-    console.log("Change Password Data:", data);
     setModalVisible(true);
     setData({ type: "password", data: data });
   };
