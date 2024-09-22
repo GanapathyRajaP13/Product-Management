@@ -30,6 +30,9 @@ interface InputFieldProps {
   fullWidth?: boolean;
   placeholder?: string;
   InputProps?: TextFieldProps["InputProps"];
+  handleChange?: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
 }
 
 export const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
@@ -44,6 +47,7 @@ export const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
       isErrorRequired = true,
       value,
       inputStyle,
+      handleChange,
       labelStyle,
       labelVariant = "standard",
       placeholder = "",
@@ -101,6 +105,7 @@ export const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
         <TextField
           value={value}
           type={type}
+          onChange={handleChange}
           error={error}
           placeholder={placeholder}
           fullWidth={fullWidth}

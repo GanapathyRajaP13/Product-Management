@@ -10,7 +10,7 @@ const ProtectedRoute: React.FC = () => {
   const userURLs = useSelector((state: RootState) => state.auth.userURL);
   const location = useLocation();
 
-  const isUrlAllowed = userURLs.some(
+  const isUrlAllowed = userURLs?.some(
     (url) => url.ScreenUrl === location.pathname
   );
 
@@ -18,7 +18,7 @@ const ProtectedRoute: React.FC = () => {
     return <Navigate to="/" />;
   }
 
-  if (!isUrlAllowed) {
+  if (!isUrlAllowed && location.pathname !== "/profile") {
     return <Navigate to="/dashboard" />;
   }
 

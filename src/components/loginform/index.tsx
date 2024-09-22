@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CustomButton from "../atoms/customButton";
 import { InputField } from "../atoms/customTextField";
@@ -88,7 +88,9 @@ const LoginForm: React.FC = () => {
         time: tokenExpirationTime,
       };
       try {
-        await dispatch(login(payload));
+        const response = await dispatch(login(payload));
+        if (response?.meta?.requestStatus === "fulfilled")
+          toast.success("Logged in Successfully");
       } catch (error) {
         console.error("Login failed", error);
       }
@@ -99,8 +101,12 @@ const LoginForm: React.FC = () => {
           "auth/register",
           registerData
         );
-        toast.success(response.data);
-        registerLogin();
+        if (response.data.success) {
+          toast.success(response.data.message);
+          registerLogin();
+        } else {
+          toast.error(response.data.message);
+        }
       } catch (error) {
         console.error("Registration failed", error);
         toast.error("Registration failed. Please try again.");
@@ -379,18 +385,6 @@ const LoginForm: React.FC = () => {
           </CustomButton>
         </Box>
       </Box>
-
-      <ToastContainer
-        position="top-right"
-        autoClose={6000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </Container>
   );
 };

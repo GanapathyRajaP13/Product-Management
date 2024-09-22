@@ -20,7 +20,7 @@ import CustomButton from "../atoms/customButton";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
 import ProfileModal from "../profileModal";
 import { logout } from "../../redux/authSlices";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { InputField } from "../atoms/customTextField";
 import { SelectField } from "../atoms/customSelectDropDown";
@@ -453,17 +453,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData }) => {
         onClose={onModalClose}
         onSubmit={onOtpSubmit}
         userInfo={userData}
-      />
-      <ToastContainer
-        position="top-right"
-        autoClose={6000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
       />
     </>
   );

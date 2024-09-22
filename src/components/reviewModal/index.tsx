@@ -28,11 +28,18 @@ const ReviewsModal: React.FC<{
       apiClient
         .post(`users/review`, { id: productId })
         .then((response) => {
-          setReviews(response.data.review);
+          const reviewData = response?.data?.review?.map(
+            (review: any, index: number) => ({
+              ...review,
+              id: index + 1,
+            })
+          );
+          setReviews(reviewData);
           setLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching reviews:", error);
+          setReviews([])
           setLoading(false);
         });
     }

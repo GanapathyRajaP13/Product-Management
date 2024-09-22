@@ -21,7 +21,8 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar, userURL }) => {
 
         flexShrink: 0,
         "& .MuiDrawer-paper": {
-          width: 240,
+          width: 200,
+          height: '100%',
           color: "#fafcfc",
           boxSizing: "border-box",
           mt: 8,
@@ -30,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, toggleSidebar, userURL }) => {
       }}
     >
       <List onClick={toggleSidebar}>
-        {url.map((url: UserURL) => {
+        {url?.map((url: UserURL) => {
           return (
             <CommonListItemButton
               sx={{ pl: 2 }}

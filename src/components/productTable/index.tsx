@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import ReviewsModal from "../reviewModal";
 import {
-  CircularProgress,
   Box,
   Card,
-  CardHeader,
   CardContent,
-  TextField,
+  CardHeader,
+  CircularProgress,
 } from "@mui/material";
 import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
-import CustomHeader from "./customHeader";
+import React, { useEffect, useState } from "react";
 import apiClient, { AxiosResponse } from "../../api/apiClient";
 import CustomButton from "../atoms/customButton";
+import { InputField } from "../atoms/customTextField";
+import ReviewsModal from "../reviewModal";
+import CustomHeader from "./customHeader";
 
 const ProductsTable: React.FC = () => {
   const [products, setProducts] = useState<any>([]);
@@ -52,10 +52,6 @@ const ProductsTable: React.FC = () => {
 
   const onClose = () => {
     setSelectedProductId(null);
-  };
-
-  const handleAddProduct = () => {
-    console.log("Add Product");
   };
 
   const columns: GridColDef[] = [
@@ -187,17 +183,14 @@ const ProductsTable: React.FC = () => {
                 gap: 2,
               }}
             >
-              <TextField
+              <InputField
+                handleChange={handleSearch}
+                fullWidth={true}
                 placeholder="Search..."
-                onChange={handleSearch}
-                size="small"
-                sx={{
-                  width: "200px",
-                }}
+                isErrorRequired={false}
+                required={false}
+                rootSx={{ mb: 0 }}
               />
-              <CustomButton onClick={handleAddProduct}>
-                Add Product
-              </CustomButton>
             </Box>
           }
           titleTypographyProps={{
@@ -240,19 +233,19 @@ const ProductsTable: React.FC = () => {
                 backgroundColor: "#f5f5f5 !important",
                 borderBottom: "1px solid #ddd",
                 borderRight: "1px solid #ccc",
-                height: "40px !important",
+                height: "35px !important",
               },
               "& .MuiTypography-root": {
                 fontSize: "14px",
               },
               "& .MuiDataGrid-footerContainer": {
-                minHeight: "40px",
-                maxHeight: "40px", 
+                minHeight: "30px",
+                maxHeight: "30px",
               },
               "& .MuiTablePagination-toolbar": {
                 minHeight: "40px",
                 maxHeight: "40px",
-                padding:"0px"
+                padding: "0px",
               },
               overflowX: "hidden",
             }}
