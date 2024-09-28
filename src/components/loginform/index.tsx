@@ -12,6 +12,7 @@ import {
   Typography,
   InputAdornment,
   Grid,
+  Avatar,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
@@ -20,6 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CustomButton from "../atoms/customButton";
 import { InputField } from "../atoms/customTextField";
 import { SelectField } from "../atoms/customSelectDropDown";
+import profileImage from "../../assets/profile.png";
 
 const genderEnum = z.enum(["male", "female", "other"]);
 const roleEnum = z.enum(["1", "2"]);
@@ -62,6 +64,17 @@ const LoginForm: React.FC = () => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
 
+  const getUserRole = (userType: number): string => {
+    switch (userType) {
+      case 1:
+        return "Admin";
+      case 2:
+        return "User";
+      default:
+        return "Guest";
+    }
+  };
+
   const togglePasswordVisibility = () => {
     setConfirmPasswordVisible(!confirmPasswordVisible);
   };
@@ -90,7 +103,26 @@ const LoginForm: React.FC = () => {
       try {
         const response = await dispatch(login(payload));
         if (response?.meta?.requestStatus === "fulfilled")
-          toast.success("Logged in Successfully");
+          toast(
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Avatar
+                alt={loginData.username}
+                src={profileImage}
+                sx={{ fontSize: "40px", mr: 1 }}
+              />
+              <Box sx={{ ml: 1 }}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  {loginData.username}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "gray", fontSize: "small" }}
+                >
+                  {getUserRole(Number(loginData.role))}
+                </Typography>
+              </Box>
+            </Box>
+          );
       } catch (error) {
         console.error("Login failed", error);
       }
