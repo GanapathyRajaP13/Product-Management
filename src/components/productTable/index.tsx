@@ -13,9 +13,15 @@ import { InputField } from "../atoms/customTextField";
 import ReviewsModal from "../reviewModal";
 import CustomHeader from "./customHeader";
 
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+}
+
 const ProductsTable: React.FC = () => {
-  const [products, setProducts] = useState<any>([]);
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null
@@ -28,12 +34,10 @@ const ProductsTable: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async (): Promise<void> => {
       try {
-        const response: AxiosResponse<{ products: any }> = await apiClient.get(
-          "users/products"
-        );
+        const response: AxiosResponse = await apiClient.get("users/products");
 
         const productsData = response.data.products.map(
-          (product: any, index: number) => ({
+          (product: Product, index: number) => ({
             ...product,
             id: index + 1,
           })
@@ -150,7 +154,7 @@ const ProductsTable: React.FC = () => {
       setFilteredProducts(products);
     } else {
       setFilteredProducts(
-        products.filter((item: any) =>
+        products.filter((item: { name: string }) =>
           item.name.toLowerCase().includes(searchValue)
         )
       );

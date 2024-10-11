@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -175,7 +176,7 @@ const LoginForm: React.FC = () => {
     } else {
       dispatch(logout());
     }
-  }, [isAuthenticated, navigate]);
+  }, [dispatch, isAuthenticated, navigate]);
 
   const registrationErrors = !isLogin
     ? (errors as FieldErrors<RegisterFormData>)

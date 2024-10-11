@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
 import React from "react";
 import DashboardComponent from "../../components/dashboard";
-import Header from "../../components/header";
+import ConnectedHeader from "../../components/header";
 
 const Dashboard: React.FC = () => {
   return (
     <>
-      <Header />
+      <ConnectedHeader />
       <Box sx={{ margin: 1 }}>
         <DashboardComponent />
       </Box>

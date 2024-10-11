@@ -2,7 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Box, LinearProgress } from "@mui/material";
 import ProductsPage from "./pages/products";
-import Profile from "./pages/profile";
+import PageConnector from "./pages/profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFoundPage from "./pages/pageNotFound";
 
@@ -18,7 +18,7 @@ const App: React.FC = () => {
             <Route path="/" element={<LoginPage />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile" element={<PageConnector />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
