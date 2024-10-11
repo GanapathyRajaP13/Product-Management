@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { ListItemButton, ListItemText, SxProps, Theme } from "@mui/material";
 import { Link } from "react-router-dom";

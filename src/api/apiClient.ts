@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { store, RootState } from "../redux/store";
 import { refreshAuthToken } from "./auth";
